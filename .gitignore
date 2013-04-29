@@ -1,5 +1,9 @@
 *.py[cod]
 
+*.sw[po]
+
+env/*
+
 # C extensions
 *.so
 
@@ -29,7 +33,12 @@ nosetests.xml
 # Translations
 *.mo
 
+.idea
+
 # Mr Developer
 .mr.developer.cfg
 .project
 .pydevproject
+
+# Config
+merchant_app/config.py

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+        <link rel="stylesheet" href="static/css/normalize.css">
+        <link rel="stylesheet" href="static/css/main.css">
+
+        <!--[if lt IE 9]>
+            <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+            <script>window.html5 || document.write('<script src="static/js/vendor/html5shiv.js"><\/script>')</script>
+        <![endif]-->
+    </head>
+    <script type="text/javascript">
+        var _affirm = _affirm || [];
+        (function(){
+            var af = document.createElement('script');
+            af.type = 'text/javascript';
+            af.async = true;
+            af.src = "{{config.AFFIRM.SERVER_NAME + '/' + config.AFFIRM.API_VERSION + '/affirm.js'}}";
+            var t = document.getElementsByTagName('script')[0];
+            t.parentNode.insertBefore(af, t);
+        })();
+    </script>
+    <style type="text/css" media="screen">
+        body {
+            margin: 1em;
+        } 
+
+        .container {
+            width: 300px;
+            text-align: center;
+            margin: 0 auto;
+            margin-bottom: 1em;
+            margin-top: 2em;
+        }
+
+        .container .label {
+            margin-top: .5em;
+        }
+    </style>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+
+        <div class="container">
+            <img src="{{item_thumbnail_url}}" width="300"/>
+            <div class="label">
+                {{display_name}} <br>
+                <span style="font-weight: bold">${{unit_price}}</span>
+            </div>
+        </div>
+        <div id="affirm_button"/>
+    <form action="#" onsubmit="return false">
+        <input type="hidden" class="AffirmMerchant" name="public_api_key" value="{{config.AFFIRM.PUBLIC_API_KEY}}"/>
+        <input type="hidden" class="AffirmCheckout" name="currency" value="USD"/>
+        <input type="hidden" class="AffirmMerchant" name="user_confirmation_url" value="{{user_confirmation_url}}"/>
+        <input type="hidden" class="AffirmMerchant" name="checkout_notification_url" value="{{checkout_notification_url}}"/>
+
+        <input type="hidden" class="AffirmItem" name="display_name" value="{{display_name}}"/>
+        <input type="hidden" class="AffirmItem" name="sku" value="{{sku}}"/>
+        <input type="hidden" class="AffirmItem" name="qty" value="1"/>
+        <input type="hidden" class="AffirmItem" name="unit_price" value="{{unit_price}}"/>
+        <input type="hidden" class="AffirmItem" name="item_url" value="{{item_url}}"/>
+        <input type="hidden" class="AffirmItem" name="item_thumbnail_url" value="{{item_thumbnail_url}}"/>
+        <input type="hidden" class="AffirmItem" name="shipping_type" value="FedEx Ground#2.00"/>
+        <input type="hidden" class="AffirmItem" name="shipping_type" value="FedEx 2nd Day#13.00"/>
+        <input type="hidden" class="AffirmItem" name="required_shipping_fields" value="name,address,email,phone"/>
+    </form>
+    </body>
+</html>
