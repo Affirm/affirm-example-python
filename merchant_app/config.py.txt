@@ -1,0 +1,13 @@
+# You can define Flask server defaults here if so desired.
+# Command-line arguments will override these.
+FLASK_SERVER_ARGS = dict(
+    #HOST = '127.0.0.1',
+    #PORT = '8080',
+)
+
+AFFIRM = dict(
+    JS_URL = "https://sandbox.affirm.com/v1/affirm.js",
+    PUBLIC_API_KEY = "<Your public API key from Affirm>",
+    SECRET_API_KEY = "<Your secret API key from Affirm>",
+)
+

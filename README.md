@@ -10,11 +10,9 @@ source env/bin/activate
 pip install -r requirements.txt
 
 Run the server and configure to listen on a publicly addressable interface. It
-is important that sanbox.affirm.com can access this interface so that
+is important that sandbox.affirm.com can access this interface so that
 checkout and order notifications can reach this demo app.
 
-python manage.py runserver --host <public_ip_address> --port <public_port>
+python manage.py runserver --host &lt;public-ip-address&t; --port &lt;public-port&gt;
 
-Point your browser to http://<public_ip_address>:<public_port>
-
-
+Point your browser to http://&lt;public-ip-address&gt;:&lt;public-port&gt;
