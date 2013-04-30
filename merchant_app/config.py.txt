@@ -11,3 +11,8 @@ AFFIRM = dict(
     SECRET_API_KEY = "<Your secret API key from Affirm>",
 )
 
+# Setting this value to True will inject the checkout notification url
+# as an Affirm html tag.  It is required that sandbox.affirm.com can 
+# reach your server in order for checkout to function.
+INJECT_CHECKOUT_NOTIFICATION = False
+
