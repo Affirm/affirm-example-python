@@ -1,4 +1,4 @@
-from flask.ext.script import Server, Manager, Shell
+from flask.ext.script import Server, Manager
 from merchant_app import create_app
 
 try:

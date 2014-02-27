@@ -24,7 +24,7 @@
             var af = document.createElement('script');
             af.type = 'text/javascript';
             af.async = true;
-            af.src = "{{config.AFFIRM.SERVER_NAME + '/' + config.AFFIRM.API_VERSION + '/affirm.js'}}";
+            af.src = "{{config.AFFIRM.AFFIRM_JS_URL}}";
             var t = document.getElementsByTagName('script')[0];
             t.parentNode.insertBefore(af, t);
         })();
@@ -45,35 +45,51 @@
         .container .label {
             margin-top: .5em;
         }
+
+        .price {
+            font-weight: bold;
+        }
     </style>
     <body>
         <!--[if lt IE 7]>
-            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+            <p class="chromeframe">
+            You are using an <strong>outdated</strong> browser.
+             Please <a href="http://browsehappy.com/">upgrade your browser</a> or
+              <a href="http://www.google.com/chromeframe/?redirect=true">activatei
+               Google Chrome Frame</a> to improve your experience.</p>
         <![endif]-->
 
         <div class="container">
-            <img src="{{item_thumbnail_url}}" width="300"/>
+            <img src="{{item_image_url}}" width="300"/>
             <div class="label">
                 {{display_name}} <br>
-                <span style="font-weight: bold">${{unit_price}}</span>
+                <span class="price">${{ unit_price }}</span>
             </div>
         </div>
         <div id="affirm_button"/>
-    <form action="#" onsubmit="return false">
-        <input type="hidden" class="AffirmMerchant" name="public_api_key" value="{{config.AFFIRM.PUBLIC_API_KEY}}"/>
-        <input type="hidden" class="AffirmCheckout" name="currency" value="USD"/>
-        <input type="hidden" class="AffirmMerchant" name="user_confirmation_url" value="{{user_confirmation_url}}"/>
-        <input type="hidden" class="AffirmMerchant" name="checkout_notification_url" value="{{checkout_notification_url}}"/>
 
-        <input type="hidden" class="AffirmItem" name="display_name" value="{{display_name}}"/>
-        <input type="hidden" class="AffirmItem" name="sku" value="{{sku}}"/>
-        <input type="hidden" class="AffirmItem" name="qty" value="1"/>
-        <input type="hidden" class="AffirmItem" name="unit_price" value="{{unit_price}}"/>
-        <input type="hidden" class="AffirmItem" name="item_url" value="{{item_url}}"/>
-        <input type="hidden" class="AffirmItem" name="item_thumbnail_url" value="{{item_thumbnail_url}}"/>
-        <input type="hidden" class="AffirmItem" name="shipping_type" value="FedEx Ground#2.00"/>
-        <input type="hidden" class="AffirmItem" name="shipping_type" value="FedEx 2nd Day#13.00"/>
-        <input type="hidden" class="AffirmItem" name="required_shipping_fields" value="name,address,email,phone"/>
+    <form action="#" onsubmit="return false">
+
+        <input type="hidden" class="AffirmMerchant"
+               name="public_api_key" value="{{config.AFFIRM.PUBLIC_API_KEY}}"/>
+        <input type="hidden" class="AffirmMerchant"
+               name="user_confirmation_url" value="{{user_confirmation_url}}"/>
+        <input type="hidden" class="AffirmMerchant"
+               name="user_cancel_url" value="{{user_confirmation_url}}"/>
+        <input type="hidden" class="AffirmMerchant"
+               name="checkout_notification_url" value="{{checkout_notification_url}}"/>
+        <input type="hidden" class="AffirmMerchant"
+               name="checkout_amendment_url" value="{{checkout_amendment_url}}"/>
+        <input type="hidden" class="AffirmCheckout"
+               name="currency" value="USD"/>
+
+        <input type="hidden" class="AffirmItem" name="display_name" value="{{ display_name }}"/>
+        <input type="hidden" class="AffirmItem" name="sku" value="{{ sku }}"/>
+        <input type="hidden" class="AffirmItem" name="qty" value="{{ qty }}"/>
+        <input type="hidden" class="AffirmItem" name="unit_price" value="{{ unit_price }}"/>
+        <input type="hidden" class="AffirmItem" name="item_url" value="{{ item_url }}"/>
+        <input type="hidden" class="AffirmItem" name="item_image_url" value="{{ item_image_url }}"/>
+        <input type="hidden" class="AffirmItem" name="required_shipping_fields" value="{{ require_shipping_fields }}"/>
     </form>
     </body>
 </html>
