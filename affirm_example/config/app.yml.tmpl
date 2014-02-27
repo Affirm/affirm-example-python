@@ -1,0 +1,27 @@
+AFFIRM:
+
+  API_URL: https://www.affirm-stage.com/api/v2
+
+  AFFIRM_JS_URL: https://www.affirm-stage.com/js/v2/affirm.js
+
+  # Set the public API key from Affirm
+  PUBLIC_API_KEY:
+
+  # Set the secret API key from Affirm
+  SECRET_API_KEY:
+
+
+# Whether or not to inject the checkout notification url as an Affirm html tag.
+# If True, it is required that sandbox.affirm.com can reach your server in
+# order for checkout to function.
+# ADVANCED: You can set this value to False if you are developing on a machine
+#           that is not externally visible, but you won't receive any
+#           notifications from Affirm
+INJECT_CHECKOUT_AMENDMENT: false
+
+# +-----------+
+# | IMPORTANT | You must change this to your externally visible server name.
+# +-----------+
+# We need the external server name in order to register webhook callbacks with
+# the Affirm server.
+SERVER_EXTERNAL_URL:

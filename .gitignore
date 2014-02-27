@@ -3,6 +3,7 @@
 *.sw[po]
 
 env/*
+.venv
 
 # C extensions
 *.so
@@ -41,4 +42,5 @@ nosetests.xml
 .pydevproject
 
 # Config
-merchant_app/config.py
+affirm_example/config/app.yml
+
