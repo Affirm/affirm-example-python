@@ -1,6 +1,8 @@
 affirm-example-python
 =====================
 
+V2
+
 Example Affirm merchant integration with a python-flask web app, talking to the Affirm sandbox.
 
 Quickstart guide:
