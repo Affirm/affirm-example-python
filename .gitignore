@@ -41,4 +41,5 @@ nosetests.xml
 .pydevproject
 
 # Config
-merchant_app/config.py
+affirm_example/config/app.yml
+
