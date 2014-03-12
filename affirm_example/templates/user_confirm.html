@@ -3,30 +3,30 @@
 <head>
     <title>User Confirm</title>
 </head>
-<body>
+<body style="font-family: monospace">
 
-Affirm charge ID is: {{ charge_id }}
+Affirm charge ID: <b>{{ charge_id }}</b>
 
 <br>
 <br>
 
-<div sytle="font-family: fixed-width">
+<div>
     <table>
         <tr>
-            <td>Read Charge</td>
-            <td><a href="{{ read_url }}" target="_blank">GET /api/v2/charges/{{ charge_id }}</a></td>
+            <td>read</td>
+            <td><a href="{{ read_url }}" target="_blank">/api/v2/charges/{{ charge_id }}</a></td>
         </tr>
         <tr>
-            <td>Capture Charge</td>
-            <td><a href="{{ capture_url }}" target="_blank">POST /api/v2/charges/{{ charge_id }}/capture</a></td>
+            <td>capture</td>
+            <td><a href="{{ capture_url }}" target="_blank">/api/v2/charges/{{ charge_id }}/capture</a></td>
         </tr>
         <tr>
-            <td>Refund Charge</td>
-            <td><a href="{{ refund_url }}" target="_blank">POST /api/v2/charges/{{ charge_id }}/refund</a></td>
+            <td>refund</td>
+            <td><a href="{{ refund_url }}" target="_blank">/api/v2/charges/{{ charge_id }}/refund</a></td>
         </tr>
         <tr>
-            <td>Void Charge</td>
-            <td><a href="{{ void_url }}" target="_blank">POST /api/v2/charges/{{ charge_id }}/void</a></td>
+            <td>void</td>
+            <td><a href="{{ void_url }}" target="_blank">/api/v2/charges/{{ charge_id }}/void</a></td>
         </tr>
     </table>
 </div>

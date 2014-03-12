@@ -7,8 +7,6 @@ from affirm_example import capture_charge
 from affirm_example import void_charge
 from affirm_example import refund_charge
 from affirm_example import create_charge
-import lxml
-import urlparse
 import json
 
 

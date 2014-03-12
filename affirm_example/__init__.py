@@ -3,11 +3,13 @@ import json
 import flask
 from flask import abort
 from flask import url_for
-import urlparse
 from uuid import uuid4
 
 
-## Affirm Charges Rest API
+app = flask.Flask(__name__)
+
+
+## Affirm Charges REST API
 
 def create_charge(charge_token):
     create_charge_url = "{0}/charges".format(app.config["AFFIRM"]["API_URL"])
@@ -59,11 +61,6 @@ def read_charge(charge_id):
     return requests.get(get_charge_url,
                         auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
                               app.config["AFFIRM"]["SECRET_API_KEY"])).json()
-
-## Commerce App Example
-
-
-app = flask.Flask(__name__)
 
 
 @app.route("/")
@@ -167,21 +164,17 @@ def affirm_checkout_amendment():
     return flask.jsonify({
         "merchant": {
 
-            # Indicates the webhook that Affirm should call after approving payment
-            # for the order.
-            # "charge_notification_url": url_for(".affirm_charge_notification", _external=True),
-
-            # # User confirmation url can be replaced inside the checkout amendment
+            # User confirmation url can be replaced inside the checkout amendment
             "user_confirmation_url": url_for(".user_confirm_page", _external=True),
         },
 
-        # # Shipping amount in cents
+        # Shipping amount in cents
         "shipping_amount": 200,
 
-        # # tax amount in cents
+        # tax amount in cents
         "tax_amount": 124,
 
-        # # checkout_id can be inserted, this can be used for your own internal tracking
+        # checkout_id can be inserted, this can be used for your own internal tracking
         "checkout_id": str(uuid4())
     })
 
@@ -200,18 +193,11 @@ def admin_do(charge_action, charge_id):
     return "<pre>%s</pre>" % json.dumps(response, indent=2, sort_keys=True)
 
 
-@app.route("/favicon.ico")
-def favicon():
-    return app.send_static_file("favicon.ico")
-
-
 def create_app(settings):
-    app.config.update(settings)
 
-    # if SERVER_EXTERNAL_URL is configured then we force the app to use the hostname as the
-    # SERVER_NAME.  This is used when generating external urls.
-    # if app.config["SERVER_EXTERNAL_URL"]:
-    #     url = urlparse.urlparse(app.config["SERVER_EXTERNAL_URL"])
-    #     app.config["PREFERRED_URL_SCHEME"] = url.scheme
-    #     app.config["SERVER_NAME"] = url.hostname
+    @app.route("/favicon.ico")
+    def favicon():
+        return app.send_static_file("favicon.ico")
+
+    app.config.update(settings)
     return app
