@@ -18,20 +18,12 @@
             <script>window.html5 || document.write('<script src="static/js/vendor/html5shiv.js"><\/script>')</script>
         <![endif]-->
     </head>
-    <script type="text/javascript">
-        var affirm = affirm || [];
-        affirm.checkout = [];
-        affirm.checkout.set = function(x) {
-            affirm.checkout.push(x)
-        };
-        (function(){
-            var af = document.createElement('script');
-            af.type = 'text/javascript';
-            af.async = true;
-            af.src = "{{config.AFFIRM.AFFIRM_JS_URL}}";
-            var t = document.getElementsByTagName('script')[0];
-            t.parentNode.insertBefore(af, t);
-        })();
+    <script>
+      var affirm_js_url = "{{config.AFFIRM.AFFIRM_JS_URL}}";
+      var affirm=window.affirm||{};
+      (function(d,e,a,l){var b,c,f,g=document.createElement(a),h=document.getElementsByTagName(a)[0],k=function(a){return function(){d[e]._.push([a,arguments])}};d[e]=k("set");c=d[e];c._=[];a=0;
+      for(b="set add save post open empty reset on off trigger ready".split(" ");a<b.length;a++)c[b[a]]=k(b[a]);a=0;for(b=["get","token","url","items"];a<b.length;a++)f=b[a],c[f]=function(){try{console.warn("affirm.checkout."+f+"() called before Affirm Checkout initialized")}catch(a){}};
+      g.async=!0;g.src=l;h.parentNode.insertBefore(g,h)})(affirm,"checkout","script",affirm_js_url);
     </script>
     <style type="text/css" media="screen">
         body {
@@ -39,7 +31,7 @@
         } 
 
         .container {
-            width: 300px;
+            width: 372px;
             text-align: center;
             margin: 0 auto;
             margin-bottom: 1em;
@@ -67,16 +59,15 @@
             <img src="{{item_image_url}}" width="300"/>
             <div class="label">
                 {{display_name}} <br>
-                <span class="price">${{ unit_price }}</span>
+                <span class="price">${{ unit_price_dollars }}</span>
+            </div>
+            <div>
+                <div id="affirm_button"></div>
             </div>
         </div>
-        <div id="affirm_button"/>
 
     <script type="application/javascript">
-        <!--
-        affirm.checkout.set({{ affirm_checkout | tojson | safe }});
-        -->
+        affirm.checkout({{ affirm_checkout | tojson | safe }});
     </script>
-
     </body>
 </html>

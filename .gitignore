@@ -3,6 +3,7 @@
 *.sw[po]
 
 env/*
+.venv
 
 # C extensions
 *.so

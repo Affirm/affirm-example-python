@@ -6,6 +6,8 @@ from affirm_example import app
 from affirm_example import capture_charge
 from affirm_example import void_charge
 from affirm_example import refund_charge
+from affirm_example import create_charge
+import lxml
 import urlparse
 import json
 
@@ -37,10 +39,22 @@ class TestAffirmExample(FlaskTestCase):
         self.assertEqual(affirm_checkout["merchant"]["checkout_amendment_url"],
                          "http://localhost/checkout_amendment")
 
+    def test_shopping_item_page_renders_image(self):
+        self.client.get("/")
+        self.assert_template_used("index.html")
+        self.assert_context("item_image_url", "/static/item.png")
+        self.assert_context("display_name", "Acme SLR-NG")
+        self.assert_context("unit_price_dollars", "15.00")
+
     def test_user_confirm(self):
-        response = self.client.post("/user_confirm", data={"charge_id": "CHARGE"})
-        self.assert200(response)
-        self.assertEqual(response.data, "Order confirmed: CHARGE")
+        with patch("affirm_example.create_charge", autospec=True) as create_charge_mock:
+            create_charge_mock.return_value = {
+                'id': 'CHARGE_ID'
+            }
+            response = self.client.post("/user_confirm", data={"charge_token": "CHARGE"})
+            self.assert200(response)
+            self.assert_template_used("user_confirm.html")
+            self.assert_context("charge_id", "CHARGE_ID")
 
     @patch("affirm_example.uuid4")
     def test_checkout_amendment(self, uuid4):
@@ -58,21 +72,20 @@ class TestAffirmExample(FlaskTestCase):
         self.assertEqual(response.json['checkout_id'], uuid4.return_value)
         self.assertEqual(response.json['shipping_amount'], 200)
         self.assertEqual(response.json['tax_amount'], 124)
-        self.assertEqual(response.json['charge_notification_url'],
-                         "http://localhost/charge_notification")
 
-    @patch("affirm_example.pprint")
-    def test_charge_notification(self, pprint):
-        response = self.client.post("/charge_notification",
-                                    content_type="application/json",
-                                    data=json.dumps({
-                                        "id": "CHARGE"
-                                    }))
-        self.assert200(response)
-        pprint.pprint.assert_called_once_with(
-            {
-                "id": "CHARGE"
-            }
+    @patch("affirm_example.requests", autospec=True)
+    def test_create_charge(self, requests):
+        with self.app.test_request_context():
+            create_charge("CHARGE")
+
+        requests.post.assert_called_once_with(
+            "https://test.affirm.com/api/v2/charges",
+            headers={"Content-Type": "application/json"},
+            data=json.dumps({'charge_token': 'CHARGE'}),
+            auth=(
+                "my_public_key",
+                "my_secret_key"
+            )
         )
 
     @patch("affirm_example.requests", autospec=True)

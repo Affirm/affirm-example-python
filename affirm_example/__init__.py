@@ -3,58 +3,65 @@ import json
 import flask
 from flask import abort
 from flask import url_for
-import pprint
 import urlparse
 from uuid import uuid4
 
 
 ## Affirm Charges Rest API
 
-def capture_charge(charge_id, amount):
-    capture_charge_url = "/".join([
-        app.config['AFFIRM']['API_URL'],
-        "charges",
-        charge_id,
-        "capture"
-    ])
+def create_charge(charge_token):
+    create_charge_url = "{0}/charges".format(app.config["AFFIRM"]["API_URL"])
+    print create_charge_url
+    return requests.post(create_charge_url,
+                         data=json.dumps({
+                             "charge_token": charge_token
+                         }),
+                         headers={"Content-Type": "application/json"},
+                         auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
+                               app.config["AFFIRM"]["SECRET_API_KEY"])).json()
+
+
+def capture_charge(charge_id, amount=None):
+    capture_charge_url = "{0}/charges/{1}/capture".format(app.config["AFFIRM"]["API_URL"], charge_id)
+    print capture_charge_url
     return requests.post(capture_charge_url,
                          data=json.dumps({
                              "amount": amount,
                          }),
                          headers={"Content-Type": "application/json"},
                          auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
-                               app.config["AFFIRM"]["SECRET_API_KEY"]))
+                               app.config["AFFIRM"]["SECRET_API_KEY"])).json()
 
 
 def void_charge(charge_id):
-    void_charge_url = "/".join([
-        app.config['AFFIRM']['API_URL'],
-        "charges",
-        charge_id,
-        "void"
-    ])
+    void_charge_url = "{0}/charges/{1}/void".format(app.config["AFFIRM"]["API_URL"], charge_id)
+    print void_charge_url
     return requests.post(void_charge_url,
                          auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
-                               app.config["AFFIRM"]["SECRET_API_KEY"]))
+                               app.config["AFFIRM"]["SECRET_API_KEY"])).json()
 
 
-def refund_charge(charge_id, amount):
-    void_charge_url = "/".join([
-        app.config['AFFIRM']['API_URL'],
-        "charges",
-        charge_id,
-        "refund"
-    ])
-    return requests.post(void_charge_url,
+def refund_charge(charge_id, amount=None):
+    refund_charge_url = "{0}/charges/{1}/refund".format(app.config["AFFIRM"]["API_URL"], charge_id)
+    print refund_charge_url
+    return requests.post(refund_charge_url,
                          data=json.dumps({
                              "amount": amount
                          }),
                          headers={"Content-Type": "application/json"},
                          auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
-                               app.config["AFFIRM"]["SECRET_API_KEY"]))
+                               app.config["AFFIRM"]["SECRET_API_KEY"])).json()
 
+
+def read_charge(charge_id):
+    get_charge_url = "{0}/charges/{1}".format(app.config["AFFIRM"]["API_URL"], charge_id)
+    print get_charge_url
+    return requests.get(get_charge_url,
+                        auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
+                              app.config["AFFIRM"]["SECRET_API_KEY"])).json()
 
 ## Commerce App Example
+
 
 app = flask.Flask(__name__)
 
@@ -71,9 +78,12 @@ def shopping_item_page():
         "currency": "USD",
 
         "merchant": {
-            "public_api_key": app.config['AFFIRM']['PUBLIC_API_KEY'],
+            "public_api_key": app.config["AFFIRM"]["PUBLIC_API_KEY"],
             "user_cancel_url": url_for(".shopping_item_page", _external=True),
             "user_confirmation_url": url_for(".user_confirm_page", _external=True),
+        },
+
+        "config": {
             "user_confirmation_url_action": "POST",
         },
 
@@ -94,7 +104,10 @@ def shopping_item_page():
             ".affirm_checkout_amendment", _external=True)
 
     template_data = dict(
-        affirm_checkout=affirm_checkout_data
+        affirm_checkout=affirm_checkout_data,
+        item_image_url=url_for(".static", filename="item.png"),
+        display_name="Acme SLR-NG",
+        unit_price_dollars="15.00",
     )
 
     return flask.render_template("index.html", **template_data)
@@ -106,29 +119,42 @@ def user_confirm_page():
     The page to render after the user completes checkout. Typically this will
     display a confirmation message to the user.
     """
-    charge_id = flask.request.form['charge_id']
-    return "Order confirmed: %s" % charge_id
+    charge_token = flask.request.form["charge_token"]
+
+    # Capture the charge with Affirm
+    charge = create_charge(charge_token)
+
+    template_data = {
+        "charge_id": charge["id"],
+    }
+
+    for charge_action in {"read", "capture", "void", "refund"}:
+        template_data["{0}_url".format(charge_action)] = url_for(".admin_do",
+                                                                 charge_action=charge_action,
+                                                                 charge_id=charge["id"])
+
+    return flask.render_template("user_confirm.html", **template_data)
 
 
 @app.route("/checkout_amendment", methods=["POST"])
 def affirm_checkout_amendment():
     """
-    The webhook that is called by Affirm after the user begins checkout.
-    This webhook should return information to Affirm about the order being
-    placed.
+    The optional webhook that is called by Affirm after the user begins checkout.
+
+    This webhook should contain any shipping, tax amount updates.
     """
-    print "Checkout Notification Callback:"
-    pprint.pprint(flask.request.json)
+
+    print "Checkout Amendment Webhook:"
+    print json.dumps(flask.request.json, indent=2, sort_keys=True)
 
     # item sku and unit_price should be checked to ensure consistency
     checkout_data = flask.request.json
 
     invalid = False
 
-    if len(checkout_data.get('items', {})) != 1:
+    if len(checkout_data.get("items", {})) != 1:
         invalid = True
     else:
-        # checkout_data['items'] is a dictionary
         for item_sku, item in checkout_data["items"].iteritems():
             if item_sku != "ACME-SLR-NG-01":
                 invalid = True
@@ -139,39 +165,39 @@ def affirm_checkout_amendment():
         abort(400)
 
     return flask.jsonify({
-        # Indicates the webhook that Affirm should call after approving payment
-        # for the order.
-        "charge_notification_url": url_for(".affirm_charge_notification", _external=True),
+        "merchant": {
 
-        # Shipping amount in cents
+            # Indicates the webhook that Affirm should call after approving payment
+            # for the order.
+            # "charge_notification_url": url_for(".affirm_charge_notification", _external=True),
+
+            # # User confirmation url can be replaced inside the checkout amendment
+            "user_confirmation_url": url_for(".user_confirm_page", _external=True),
+        },
+
+        # # Shipping amount in cents
         "shipping_amount": 200,
 
-        # tax amount in cents
+        # # tax amount in cents
         "tax_amount": 124,
 
-        # User confirmation url can be replaced inside the checkout amendment
-        "user_confirmation_url": url_for(".user_confirm_page", _external=True),
-
-        # checkout_id can be replaced, this can be used for your own internal tracking
+        # # checkout_id can be inserted, this can be used for your own internal tracking
         "checkout_id": str(uuid4())
     })
 
 
-@app.route("/charge_notification", methods=["POST"])
-def affirm_charge_notification():
-    """
-    The webhook that is called by Affirm after charge is confirmed by Affirm
-    """
-    print "Charge Notification Callback:"
-    pprint.pprint(flask.request.json)
-
-    # if there are no errors return a 200 OK response
-    return ""
-
-
-# Example Admin Routes
-
-# @app.route("/admin/fulfillment/", methods=["POST", "GET"])
+@app.route("/admin/do/<charge_action>/<charge_id>")
+def admin_do(charge_action, charge_id):
+    action_dispatch = {
+        "capture": capture_charge,
+        "read": read_charge,
+        "refund": refund_charge,
+        "void": void_charge,
+    }
+    if charge_action not in action_dispatch:
+        return abort(404)
+    response = action_dispatch[charge_action](charge_id)
+    return "<pre>%s</pre>" % json.dumps(response, indent=2, sort_keys=True)
 
 
 @app.route("/favicon.ico")
@@ -184,8 +210,8 @@ def create_app(settings):
 
     # if SERVER_EXTERNAL_URL is configured then we force the app to use the hostname as the
     # SERVER_NAME.  This is used when generating external urls.
-    if app.config['SERVER_EXTERNAL_URL']:
-        url = urlparse.urlparse(app.config['SERVER_EXTERNAL_URL'])
-        app.config['PREFERRED_URL_SCHEME'] = url.scheme
-        app.config['SERVER_NAME'] = url.hostname
+    # if app.config["SERVER_EXTERNAL_URL"]:
+    #     url = urlparse.urlparse(app.config["SERVER_EXTERNAL_URL"])
+    #     app.config["PREFERRED_URL_SCHEME"] = url.scheme
+    #     app.config["SERVER_NAME"] = url.hostname
     return app
