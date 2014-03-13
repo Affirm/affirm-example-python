@@ -309,12 +309,6 @@ affirm.checkout({
     // values are below
     required_shipping_fields:     ["name","address","phone_number", "email"],
 
-    // If any billing fields are required for the order and are not provided
-    // by you, they will be asked for during the checkout flow.  Affirm
-    // already requires 'phone_number', 'dob', 'name', and 'email'.  All
-    // possible values are listed below.
-    required_billing_fields:      ["name","phone_number","email", "dob", "ssn_last4"],
-
     // Action that will be used when the user is sent to the user_confirmation_url.
     // Possible values are 'GET' and 'POST'. Default is 'POST'
     user_confirmation_url_action: "POST"
