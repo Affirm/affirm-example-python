@@ -38,7 +38,7 @@ Quickstart guide:
 5. Run the server.  If you have followed step 3 and configured the app to recieve amendment webhooks then the `host` and `port` parameters should allow external access from `sandbox.affirm.com`
 
     ```
-    python manage.py runserver --host 127.0.0.1 --port 8080
+    affirm_example_manage runserver --host 127.0.0.1 --port 8080
     ```
 
 6. Point your browser to ```http://127.0.0.1:8080```
