@@ -265,7 +265,7 @@ affirm.checkout({
   // Any extra fees applied to the checkout (cents)
   misc_fee_amount:      298,
 
-  // Total? shipping amount for the checkout (cents)
+  // Total shipping amount for the checkout (cents)
   shipping_amount:      1900,
 
   // States that cannot be shipped to for any item.
@@ -350,7 +350,7 @@ affirm.checkout({
       full: "Mr. John Joe Doe Jr."
     },
 
-    // shipping address (are these the correct field names?)
+    // Shipping address
     address: {
 
       // required
