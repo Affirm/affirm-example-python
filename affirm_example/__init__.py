@@ -147,19 +147,11 @@ def affirm_checkout_amendment():
     # item sku and unit_price should be checked to ensure consistency
     checkout_data = flask.request.json
 
-    invalid = False
-
-    if len(checkout_data.get("items", {})) != 1:
-        invalid = True
-    else:
-        for item_sku, item in checkout_data["items"].iteritems():
-            if item_sku != "ACME-SLR-NG-01":
-                invalid = True
-            elif item["unit_price"] != 1500:
-                invalid = True
-
-    if invalid:
-        abort(400)
+    for item_sku, item in checkout_data["items"].iteritems():
+        if item_sku != "ACME-SLR-NG-01":
+            abort(400)
+        elif item["unit_price"] != 1500:
+            abort(400)
 
     return flask.jsonify({
         "merchant": {
