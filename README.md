@@ -5,13 +5,21 @@ Example Affirm merchant integration with a python flask web app, integrated with
 
 Quickstart guide:
 
-1. Install the package in development mode
+1. Configure virtualenv environment:
+
+    ```
+    virtualenv env
+    source env/bin/activate
+    pip install -r requirements.txt
+    ```
+
+2. Install the package in development mode
 
     ```
     python setup.py develop
     ```
 
-2. Edit the file `config/app.yml` and fill in public/secret API keys (Affirm will give you these)
+3. Edit the file `config/app.yml` and fill in public/secret API keys (Affirm will give you these)
 
     ```
      # Set the public API key from Affirm
@@ -21,18 +29,10 @@ Quickstart guide:
      SECRET_API_KEY:
     ```
 
-3. Optionally, configure the app to recieve checkout amendments and charge notifications.  In `config/app.yml` set `INJECT_CHECKOUT_AMENDMENT` to `true` in order to recieve the checkout amendment hook.  
+4. Optionally, configure the app to recieve checkout amendments and charge notifications.  In `config/app.yml` set `INJECT_CHECKOUT_AMENDMENT` to `true` in order to recieve the checkout amendment hook.  
 
     ```
-    INJECT_CHECKOUT_AMENDMENT: true
-    ```
-
-4. Configure virtualenv environment:
-
-    ```
-    virtualenv env
-    source env/bin/activate
-    pip install -r requirements.txt
+    INJECT_CHECKOUT_AMENDMENT_URL: true
     ```
 
 5. Run the server.  If you have followed step 3 and configured the app to recieve amendment webhooks then the `host` and `port` parameters should allow external access from `sandbox.affirm.com`
