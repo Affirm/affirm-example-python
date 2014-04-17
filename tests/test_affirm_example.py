@@ -49,7 +49,7 @@ class TestAffirmExample(FlaskTestCase):
             create_charge_mock.return_value = {
                 'id': 'CHARGE_ID'
             }
-            response = self.client.post("/user_confirm", data={"charge_token": "CHARGE"})
+            response = self.client.post("/user_confirm", data={"checkout_token": "CHARGE"})
             self.assert200(response)
             self.assert_template_used("user_confirm.html")
             self.assert_context("charge_id", "CHARGE_ID")
@@ -79,7 +79,7 @@ class TestAffirmExample(FlaskTestCase):
         requests.post.assert_called_once_with(
             "https://test.affirm.com/api/v2/charges",
             headers={"Content-Type": "application/json"},
-            data=json.dumps({'charge_token': 'CHARGE'}),
+            data=json.dumps({'checkout_token': 'CHARGE'}),
             auth=(
                 "my_public_key",
                 "my_secret_key"

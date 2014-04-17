@@ -11,12 +11,12 @@ app = flask.Flask(__name__)
 
 ## Affirm Charges REST API
 
-def create_charge(charge_token):
+def create_charge(checkout_token):
     create_charge_url = "{0}/charges".format(app.config["AFFIRM"]["API_URL"])
     print create_charge_url
     return requests.post(create_charge_url,
                          data=json.dumps({
-                             "charge_token": charge_token
+                             "checkout_token": checkout_token
                          }),
                          headers={"Content-Type": "application/json"},
                          auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
@@ -116,10 +116,10 @@ def user_confirm_page():
     The page to render after the user completes checkout. Typically this will
     display a confirmation message to the user.
     """
-    charge_token = flask.request.form["charge_token"]
+    checkout_token = flask.request.form["checkout_token"]
 
     # Capture the charge with Affirm
-    charge = create_charge(charge_token)
+    charge = create_charge(checkout_token)
 
     template_data = {
         "charge_id": charge["id"],
