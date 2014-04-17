@@ -10,7 +10,6 @@ Quickstart guide:
     ```
     virtualenv env
     source env/bin/activate
-    pip install -r requirements.txt
     ```
 
 2. Install the package in development mode
