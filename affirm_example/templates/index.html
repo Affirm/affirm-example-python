@@ -65,6 +65,7 @@
         </div>
 
     <script type="application/javascript">
+        affirm.checkout.set("financial_product_key", "{{ config['AFFIRM']['FINANCIAL_PRODUCT_KEY'] }}")
         affirm.checkout.ready(function() {
             affirm.checkout({{ affirm_checkout | tojson | safe }});
         });
