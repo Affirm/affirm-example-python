@@ -19,11 +19,11 @@
         <![endif]-->
     </head>
     <script>
-      var affirm_js_url = "{{config.AFFIRM.AFFIRM_JS_URL}}";
-      var affirm=window.affirm||{};
-      (function(d,e,a,l){var b,c,f,g=document.createElement(a),h=document.getElementsByTagName(a)[0],k=function(a){return function(){d[e]._.push([a,arguments])}};d[e]=k("set");c=d[e];c._=[];a=0;
-      for(b="set add save post open empty reset on off trigger ready".split(" ");a<b.length;a++)c[b[a]]=k(b[a]);a=0;for(b=["get","token","url","items"];a<b.length;a++)f=b[a],c[f]=function(){try{console.warn("affirm.checkout."+f+"() called before Affirm Checkout initialized")}catch(a){}};
-      g.async=!0;g.src=l;h.parentNode.insertBefore(g,h)})(affirm,"checkout","script",affirm_js_url);
+      var _affirm_config = {
+        public_api_key:        "{{config['AFFIRM']['PUBLIC_API_KEY']}}",
+        script:                "{{ config['AFFIRM']['AFFIRM_JS_URL'] }}"
+      };
+      (function(l,g,m,e,a,f,b){var d,c=l[m]||{},h=document.createElement(f),n=document.getElementsByTagName(f)[0],k=function(a,b,c){return function(){a[b]._.push([c,arguments])}};c[e]=k(c,e,"set");d=c[e];c[a]={};c[a]._=[];d._=[];c[a][b]=k(c,a,b);a=0;for(b="set add save post open empty reset on off trigger ready".split(" ");a<b.length;a++)d[b[a]]=k(c,e,b[a]);a=0;for(b=["get","token","url","items"];a<b.length;a++)d[b[a]]=function(){};h.async=!0;h.src=g[f];n.parentNode.insertBefore(h,n);delete g[f];d(g);l[m]=c})(window,_affirm_config,"affirm","checkout","ui","script","ready");
     </script>
     <style type="text/css" media="screen">
         body {
@@ -61,13 +61,13 @@
                 {{display_name}} <br>
                 <span class="price">${{ unit_price_dollars }}</span>
             </div>
-            <div>
-                <div id="affirm_button"></div>
-            </div>
+            <div id="affirm_button" data-product-key="{{ config['AFFIRM']['FINANCIAL_PRODUCT_KEY'] }}"></div>
         </div>
 
     <script type="application/javascript">
-        affirm.checkout({{ affirm_checkout | tojson | safe }});
+        affirm.checkout.ready(function() {
+            affirm.checkout({{ affirm_checkout | tojson | safe }});
+        });
     </script>
     </body>
 </html>

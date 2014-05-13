@@ -11,6 +11,15 @@ app = flask.Flask(__name__)
 
 ## Affirm Charges REST API
 
+def get_checkout_from_token(checkout_token):
+    read_checkout_url = "{0}/checkout/{1}".format(app.config["AFFIRM"]["API_URL"], checkout_token)
+    print read_checkout_url
+    return requests.get(read_checkout_url,
+                        headers={"Content-Type": "application/json"},
+                        auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
+                              app.config["AFFIRM"]["SECRET_API_KEY"])).json()
+
+
 def create_charge(checkout_token):
     create_charge_url = "{0}/charges".format(app.config["AFFIRM"]["API_URL"])
     print create_charge_url
@@ -74,20 +83,24 @@ def shopping_item_page():
 
         "currency": "USD",
 
+        # checkout_id can be inserted, this can be used for your own internal tracking
+        "checkout_id": str(uuid4()),
+
         "merchant": {
-            "public_api_key": app.config["AFFIRM"]["PUBLIC_API_KEY"],
+            # "public_api_key": app.config["AFFIRM"]["PUBLIC_API_KEY"],
             "user_cancel_url": url_for(".shopping_item_page", _external=True),
             "user_confirmation_url": url_for(".user_confirm_page", _external=True),
         },
 
         "config": {
             "user_confirmation_url_action": "POST",
+            # "financial_product_key": "TTE3EMBTTM0P2WM8"
         },
 
         "items": [
             {
                 "sku": "ACME-SLR-NG-01",
-                "item_url": url_for(".shopping_item_page", _external=True),
+                "item_url": url_for(".shopping_item_page", _external=True) + "&$main=SmartFurniture/SEICR5607_3",
                 "item_image_url": url_for(".static", filename="item.png", _external=True),
                 "display_name": "Acme SLR-NG",
                 "unit_price": 1500,
@@ -118,8 +131,15 @@ def user_confirm_page():
     """
     checkout_token = flask.request.form["checkout_token"]
 
+    checkout = get_checkout_from_token(checkout_token)
+    import pprint
+    pprint.pprint(checkout)
+
     # Capture the charge with Affirm
     charge = create_charge(checkout_token)
+
+    import pprint
+    pprint.pprint(charge)
 
     template_data = {
         "charge_id": charge["id"],
@@ -166,8 +186,6 @@ def affirm_checkout_amendment():
         # tax amount in cents
         "tax_amount": 124,
 
-        # checkout_id can be inserted, this can be used for your own internal tracking
-        "checkout_id": str(uuid4())
     })
 
 
