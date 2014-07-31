@@ -20,6 +20,11 @@ if not settings['AFFIRM']['PUBLIC_API_KEY'] or not settings['AFFIRM']['SECRET_AP
     print >>sys.stderr, "Please configure your Affirm public and secret API keys in %s" % settings_file
     sys.exit(1)
 
+if not settings['AFFIRM']['FINANCIAL_PRODUCT_KEY']:
+    print >>sys.stderr, "Please configure your Affirm financial product key in %s" % settings_file
+    sys.exit(1)
+
+
 app = create_app(settings)
 
 manager = Manager(app)

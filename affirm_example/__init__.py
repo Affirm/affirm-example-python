@@ -94,6 +94,7 @@ def shopping_item_page():
 
         "config": {
             "user_confirmation_url_action": "POST",
+            "financial_product_key": app.config["AFFIRM"]["FINANCIAL_PRODUCT_KEY"],
         },
 
         "items": [
