@@ -94,19 +94,31 @@ def shopping_item_page():
 
         "config": {
             "user_confirmation_url_action": "POST",
-            # "financial_product_key": "TTE3EMBTTM0P2WM8"
         },
 
         "items": [
             {
                 "sku": "ACME-SLR-NG-01",
-                "item_url": url_for(".shopping_item_page", _external=True) + "&$main=SmartFurniture/SEICR5607_3",
+                "item_url": url_for(".shopping_item_page", _external=True),
                 "item_image_url": url_for(".static", filename="item.png", _external=True),
                 "display_name": "Acme SLR-NG",
                 "unit_price": 1500,
                 "qty": 1
             }
         ],
+
+        "shipping": {
+            "name": {
+                "full": "John Doe"
+            },
+            "address": {
+                "line1": "325 Pacific Ave.",
+                "city": "San Francisco",
+                "state": "CA",
+                "zipcode": "94111"
+            }
+        },
+        "total": 1500
     }
 
     if app.config["INJECT_CHECKOUT_AMENDMENT_URL"]:
