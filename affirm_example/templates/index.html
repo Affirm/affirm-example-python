@@ -47,27 +47,48 @@
         }
     </style>
     <body>
-        <!--[if lt IE 7]>
-            <p class="chromeframe">
-            You are using an <strong>outdated</strong> browser.
-             Please <a href="http://browsehappy.com/">upgrade your browser</a> or
-              <a href="http://www.google.com/chromeframe/?redirect=true">activatei
-               Google Chrome Frame</a> to improve your experience.</p>
-        <![endif]-->
+         <!--[if lt IE 7]>
+             <p class="chromeframe">
+             You are using an <strong>outdated</strong> browser.
+              Please <a href="http://browsehappy.com/">upgrade your browser</a> or
+               <a href="http://www.google.com/chromeframe/?redirect=true">activatei
+                Google Chrome Frame</a> to improve your experience.</p>
+         <![endif]-->
+         <!-- Sample item image -->
+         <div class="container">
+           <img src="{{item_image_url}}" width="300"/>
+           <div class="label">
+             {{display_name}} <br>
+             <span class="price">${{ unit_price_dollars }}</span>
+           </div>
+           <br>
+           <!-- Payment Type Selector -->
+           <div class="form-group col-xs-12">
+             <label for="affirm_checkout_option">
+               <input type="radio" name="payment_type" id="affirm_checkout_option" value="affirm" checked/>
+               <img src="https://cdn1.affirm.com/images/badges/affirm-card_78x54.png" width="39" height="27"/>
+               Pay with Affirm Split Pay
+             </label>
+             <div class="affirm-promo" data-promo-size="296x196" data-promo-content="https://www.affirm.com/images/png/press-green_mark.png"></div>
+           </div>
+           <!-- Checkout Submit Button -->
+           <div class="col-xs-6 sidebar">
+             <h3>Complete your checkout</h3>
+             <form>
+               <input type="button" class="btn btn-primary" value="Continue" id="submit-form" onclick="return openCheckout(this);"/>
+             </form>
+           </div>
+         </div>
 
-        <div class="container">
-            <img src="{{item_image_url}}" width="300"/>
-            <div class="label">
-                {{display_name}} <br>
-                <span class="price">${{ unit_price_dollars }}</span>
-            </div>
-            <div id="affirm_button" data-product-key="{{ config['AFFIRM']['FINANCIAL_PRODUCT_KEY'] }}"></div>
-        </div>
 
-    <script type="application/javascript">
-        affirm.checkout.ready(function() {
-            affirm.checkout({{ affirm_checkout | tojson | safe }});
-        });
-    </script>
+         <script type="application/javascript">
+           affirm.checkout.ready(function() {
+             affirm.checkout({{ affirm_checkout | tojson | safe }});
+           });
+           function openCheckout(input) {
+             affirm.checkout.open();
+             return false; // return false so page doesn't reload
+           }
+         </script>
     </body>
 </html>
