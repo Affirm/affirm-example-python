@@ -77,7 +77,9 @@ def shopping_item_page():
     """
     The item page
     """
-
+    kwargs = {'_external': True}
+    if app.config['USE_HTTPS']:
+        kwargs.update({'_scheme': 'https'})
     # this gets turned into JSON and used to initialize the affirm checkout
     affirm_checkout_data = {
 
@@ -88,8 +90,8 @@ def shopping_item_page():
 
         "merchant": {
             # "public_api_key": app.config["AFFIRM"]["PUBLIC_API_KEY"],
-            "user_cancel_url": url_for(".shopping_item_page", _external=True),
-            "user_confirmation_url": url_for(".user_confirm_page", _external=True),
+            "user_cancel_url": url_for(".shopping_item_page", **kwargs),
+            "user_confirmation_url": url_for(".user_confirm_page", **kwargs),
         },
 
         "config": {
@@ -100,8 +102,8 @@ def shopping_item_page():
         "items": [
             {
                 "sku": "ACME-SLR-NG-01",
-                "item_url": url_for(".shopping_item_page", _external=True),
-                "item_image_url": url_for(".static", filename="item.png", _external=True),
+                "item_url": url_for(".shopping_item_page", **kwargs),
+                "item_image_url": url_for(".static", filename="item.png", **kwargs),
                 "display_name": "Acme SLR-NG",
                 "unit_price": 1500,
                 "qty": 1
@@ -122,13 +124,17 @@ def shopping_item_page():
         "total": 1500
     }
 
+
     if app.config["INJECT_CHECKOUT_AMENDMENT_URL"]:
         affirm_checkout_data["merchant"]["checkout_amendment_url"] = url_for(
-            ".affirm_checkout_amendment", _external=True)
+            ".affirm_checkout_amendment", **kwargs)
 
+    kwargs = {}
+    if app.config['USE_HTTPS']:
+        kwargs.update({'_external': True, '_scheme': 'https'})
     template_data = dict(
         affirm_checkout=affirm_checkout_data,
-        item_image_url=url_for(".static", filename="item.png"),
+        item_image_url=url_for(".static", filename="item.png", **kwargs),
         display_name="Acme SLR-NG",
         unit_price_dollars="15.00",
     )
@@ -157,11 +163,14 @@ def user_confirm_page():
     template_data = {
         "charge_id": charge["id"],
     }
-
+    kwargs = {}
+    if app.config['USE_HTTPS']:
+        kwargs.update({'_external': True, '_scheme': 'https'})
     for charge_action in {"read", "capture", "void", "refund"}:
         template_data["{0}_url".format(charge_action)] = url_for(".admin_do",
                                                                  charge_action=charge_action,
-                                                                 charge_id=charge["id"])
+                                                                 charge_id=charge["id"],
+                                                                 **kwargs)
 
     return flask.render_template("user_confirm.html", **template_data)
 
@@ -185,12 +194,14 @@ def affirm_checkout_amendment():
             abort(400)
         elif item["unit_price"] != 1500:
             abort(400)
-
+    kwargs = {'_external': True}
+    if app.config['USE_HTTPS']:
+        kwargs.update({'_scheme': 'https'})
     return flask.jsonify({
         "merchant": {
 
             # User confirmation url can be replaced inside the checkout amendment
-            "user_confirmation_url": url_for(".user_confirm_page", _external=True),
+            "user_confirmation_url": url_for(".user_confirm_page", **kwargs),
         },
 
         # Shipping amount in cents
