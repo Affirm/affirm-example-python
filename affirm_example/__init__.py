@@ -10,6 +10,11 @@ app = flask.Flask(__name__)
 
 
 ## Affirm Charges REST API
+def _get_extra_request_args():
+    if "extra_request_args" in app.config:
+        return app.config["extra_request_args"]
+    else:
+        return {}
 
 def get_checkout_from_token(checkout_token):
     read_checkout_url = "{0}/checkout/{1}".format(app.config["AFFIRM"]["API_URL"], checkout_token)
@@ -17,19 +22,22 @@ def get_checkout_from_token(checkout_token):
     return requests.get(read_checkout_url,
                         headers={"Content-Type": "application/json"},
                         auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
-                              app.config["AFFIRM"]["SECRET_API_KEY"])).json()
+                              app.config["AFFIRM"]["SECRET_API_KEY"]),
+                              **_get_extra_request_args()).json()
 
 
 def create_charge(checkout_token):
     create_charge_url = "{0}/charges".format(app.config["AFFIRM"]["API_URL"])
     print create_charge_url
+    request_args = {}
     return requests.post(create_charge_url,
                          data=json.dumps({
                              "checkout_token": checkout_token
                          }),
                          headers={"Content-Type": "application/json"},
                          auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
-                               app.config["AFFIRM"]["SECRET_API_KEY"])).json()
+                               app.config["AFFIRM"]["SECRET_API_KEY"]),
+                         **_get_extra_request_args()).json()
 
 
 def capture_charge(charge_id, amount=None):
@@ -41,7 +49,8 @@ def capture_charge(charge_id, amount=None):
                          }),
                          headers={"Content-Type": "application/json"},
                          auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
-                               app.config["AFFIRM"]["SECRET_API_KEY"])).json()
+                               app.config["AFFIRM"]["SECRET_API_KEY"]),
+                         **_get_extra_request_args()).json()
 
 
 def void_charge(charge_id):
@@ -49,7 +58,8 @@ def void_charge(charge_id):
     print void_charge_url
     return requests.post(void_charge_url,
                          auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
-                               app.config["AFFIRM"]["SECRET_API_KEY"])).json()
+                               app.config["AFFIRM"]["SECRET_API_KEY"]),
+                         **_get_extra_request_args()).json()
 
 
 def refund_charge(charge_id, amount=None):
@@ -61,7 +71,8 @@ def refund_charge(charge_id, amount=None):
                          }),
                          headers={"Content-Type": "application/json"},
                          auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
-                               app.config["AFFIRM"]["SECRET_API_KEY"])).json()
+                               app.config["AFFIRM"]["SECRET_API_KEY"]),
+                         **_get_extra_request_args()).json()
 
 
 def read_charge(charge_id):
@@ -69,7 +80,8 @@ def read_charge(charge_id):
     print get_charge_url
     return requests.get(get_charge_url,
                         auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
-                              app.config["AFFIRM"]["SECRET_API_KEY"])).json()
+                              app.config["AFFIRM"]["SECRET_API_KEY"]),
+                        **_get_extra_request_args()).json()
 
 
 @app.route("/")
