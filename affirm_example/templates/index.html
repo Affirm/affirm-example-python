@@ -69,7 +69,9 @@
                <img src="https://cdn1.affirm.com/images/badges/affirm-card_78x54.png" width="39" height="27"/>
                Pay with Affirm Split Pay
              </label>
-             <div class="affirm-promo" data-promo-size="296x196" data-promo-content="https://www.affirm.com/images/png/press-green_mark.png"></div>
+             <div class="affirm-promo" data-promo-size="296x196"
+                  data-promo-content="https://www.affirm.com/images/png/press-green_mark.png"></div>
+             <div><a id="learn-more" style="visibility: none" href="#">learn more</a></div>
            </div>
            <!-- Checkout Submit Button -->
            <div class="col-xs-6 sidebar">
@@ -84,6 +86,14 @@
          <script type="application/javascript">
            affirm.checkout.ready(function() {
              affirm.checkout({{ affirm_checkout | tojson | safe }});
+           });
+           affirm.checkout.ready(function () {
+             affirm.payments.get_estimate({amount: 1500, apr: "0.16", months: 12}, function (res) {
+               a = document.getElementById('learn-more')
+               a.onclick = res.open_modal;
+               a.innerText = "As low as $" + (res.payment / 100) + "/mo"
+               a.style.visibility = "visible";
+             })
            });
            function openCheckout(input) {
              affirm.checkout.open();
