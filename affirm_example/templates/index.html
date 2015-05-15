@@ -88,8 +88,9 @@
              affirm.checkout({{ affirm_checkout | tojson | safe }});
            });
            affirm.ui.ready(function () {
+             var a = document.getElementById('learn-more');
+             a.onclick = affirm.widgets.learn_more;
              affirm.ui.payments.get_estimate({amount: 1500, apr: "0.16", months: 12}, function (res) {
-               var a = document.getElementById('learn-more')
                a.onclick = res.open_modal;
                var dollars = 0|(res.payment / 100)
                var cents = (res.payment % 100);
