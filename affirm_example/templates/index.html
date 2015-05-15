@@ -87,8 +87,8 @@
            affirm.checkout.ready(function() {
              affirm.checkout({{ affirm_checkout | tojson | safe }});
            });
-           affirm.checkout.ready(function () {
-             affirm.payments.get_estimate({amount: 1500, apr: "0.16", months: 12}, function (res) {
+           affirm.ui.ready(function () {
+             affirm.ui.payments.get_estimate({amount: 1500, apr: "0.16", months: 12}, function (res) {
                a = document.getElementById('learn-more')
                a.onclick = res.open_modal;
                a.innerText = "As low as $" + (res.payment / 100) + "/mo"
