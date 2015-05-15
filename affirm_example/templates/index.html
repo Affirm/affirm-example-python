@@ -89,9 +89,12 @@
            });
            affirm.ui.ready(function () {
              affirm.ui.payments.get_estimate({amount: 1500, apr: "0.16", months: 12}, function (res) {
-               a = document.getElementById('learn-more')
+               var a = document.getElementById('learn-more')
                a.onclick = res.open_modal;
-               a.innerText = "As low as $" + (res.payment / 100) + "/mo"
+               var dollars = 0|(res.payment / 100)
+               var cents = (res.payment % 100);
+               cents = cents < 10 ? "0"+cents : cents+""
+               a.innerText = "As low as $" + dollars + "." + cents + "/mo"
                a.style.visibility = "visible";
              })
            });
