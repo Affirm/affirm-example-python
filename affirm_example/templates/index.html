@@ -59,7 +59,7 @@
            <img src="{{item_image_url}}" width="300"/>
            <div class="label">
              {{display_name}} <br>
-             <span class="price">${{ unit_price_dollars }}</span>
+             $<input id="item-price" class="price" value="{{ unit_price_dollars }}">
            </div>
            <br>
            <!-- Payment Type Selector -->
@@ -82,10 +82,13 @@
 
 
          <script type="application/javascript">
-           affirm.checkout.ready(function() {
-             affirm.checkout({{ affirm_checkout | tojson | safe }});
-           });
+           var checkoutData = {{ affirm_checkout | tojson | safe }};
            function openCheckout(input) {
+             var priceInput = document.getElementById("item-price");
+             var price = Math.round(Number(priceInput.value) * 100);
+             checkoutData.total = checkoutData.items[0].unit_price = price;
+
+             affirm.checkout(checkoutData);
              affirm.checkout.open();
              return false; // return false so page doesn't reload
            }
