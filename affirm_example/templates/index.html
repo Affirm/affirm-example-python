@@ -83,6 +83,7 @@
 
          <script type="application/javascript">
            var checkoutData = {{ affirm_checkout | tojson | safe }};
+           checkoutData.checkout_expiration = (new Date(Date.now() + 180000)).toISOString(); // 3 minutes from now
            function openCheckout(input) {
              var priceInput = document.getElementById("item-price");
              var price = Math.round(Number(priceInput.value) * 100);
