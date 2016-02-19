@@ -94,7 +94,7 @@ def shopping_item_page():
     if app.config['USE_HTTPS']:
         kwargs.update({'_scheme': 'https'})
     # this gets turned into JSON and used to initialize the affirm checkout
-    checkout_expiration = (datetime.now() + timedelta(minutes=3)).replace(tzinfo=None).isoformat().rsplit('.', 1)[0] + 'Z'
+    checkout_expiration = (datetime.utcnow() + timedelta(minutes=3)).replace(tzinfo=None).isoformat().rsplit('.', 1)[0] + 'Z'
     affirm_checkout_data = {
 
         "currency": "USD",
