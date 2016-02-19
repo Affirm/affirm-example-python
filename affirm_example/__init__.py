@@ -4,6 +4,7 @@ import flask
 from flask import abort
 from flask import url_for
 from uuid import uuid4
+from datetime import datetime, timedelta
 
 
 app = flask.Flask(__name__)
@@ -93,6 +94,7 @@ def shopping_item_page():
     if app.config['USE_HTTPS']:
         kwargs.update({'_scheme': 'https'})
     # this gets turned into JSON and used to initialize the affirm checkout
+    checkout_expiration = (datetime.now() + timedelta(minutes=3)).replace(tzinfo=None).isoformat().rsplit('.', 1)[0] + 'Z'
     affirm_checkout_data = {
 
         "currency": "USD",
@@ -133,7 +135,8 @@ def shopping_item_page():
                 "zipcode": "94111"
             }
         },
-        "total": 1500
+        "total": 1500,
+        "checkout_expiration": checkout_expiration
     }
 
 
