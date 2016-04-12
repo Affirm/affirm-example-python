@@ -60,6 +60,10 @@
            <div class="label">
              {{display_name}} <br>
              $<input id="item-price" class="price" value="{{ unit_price_dollars }}">
+	     <br>
+	     Financing Program Id:
+	     <br>
+	     <input id="financing_program_id" value="4">
            </div>
            <br>
            <!-- Payment Type Selector -->
@@ -87,6 +91,12 @@
              var priceInput = document.getElementById("item-price");
              var price = Math.round(Number(priceInput.value) * 100);
              checkoutData.total = checkoutData.items[0].unit_price = price;
+             var programInput = document.getElementById("financing_program_id").value;
+	     if (programInput == "") {
+		     delete checkoutData["financing_program_id"];
+	     } else {
+		     checkoutData.financing_program_id = programInput;
+	     }
 
              affirm.checkout(checkoutData);
              affirm.checkout.open();

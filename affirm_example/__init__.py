@@ -133,7 +133,8 @@ def shopping_item_page():
                 "zipcode": "94111"
             }
         },
-        "total": 1500
+        "total": 1500,
+	"financing_program_id": 4
     }
 
 
