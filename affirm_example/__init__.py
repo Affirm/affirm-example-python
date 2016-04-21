@@ -134,7 +134,7 @@ def shopping_item_page():
             }
         },
         "total": 1500,
-	"financing_program_id": 4
+	"financing_program_name": "default_program"
     }
 
 

@@ -63,7 +63,7 @@
 	     <br>
 	     Financing Program Id:
 	     <br>
-	     <input id="financing_program_id" value="4">
+	     <input id="financing_program_name" value="default_program">
            </div>
            <br>
            <!-- Payment Type Selector -->
@@ -91,11 +91,11 @@
              var priceInput = document.getElementById("item-price");
              var price = Math.round(Number(priceInput.value) * 100);
              checkoutData.total = checkoutData.items[0].unit_price = price;
-             var programInput = document.getElementById("financing_program_id").value;
+             var programInput = document.getElementById("financing_program_name").value;
 	     if (programInput == "") {
-		     delete checkoutData["financing_program_id"];
+		     delete checkoutData["financing_program_name"];
 	     } else {
-		     checkoutData.financing_program_id = programInput;
+		     checkoutData.financing_program_name = programInput;
 	     }
 
              affirm.checkout(checkoutData);
