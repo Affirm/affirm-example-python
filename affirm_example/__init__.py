@@ -117,7 +117,7 @@ def shopping_item_page():
                 "item_url": url_for(".shopping_item_page", **kwargs),
                 "item_image_url": url_for(".static", filename="item.png", **kwargs),
                 "display_name": "Acme SLR-NG",
-                "unit_price": 1500,
+                "unit_price": 10000,
                 "qty": 1
             }
         ],
@@ -133,7 +133,7 @@ def shopping_item_page():
                 "zipcode": "94111"
             }
         },
-        "total": 1500
+        "total": 10000
     }
 
 
@@ -148,7 +148,7 @@ def shopping_item_page():
         affirm_checkout=affirm_checkout_data,
         item_image_url=url_for(".static", filename="item.png", **kwargs),
         display_name="Acme SLR-NG",
-        unit_price_dollars="15.00",
+        unit_price_dollars="100.00",
     )
 
     return flask.render_template("index.html", **template_data)
