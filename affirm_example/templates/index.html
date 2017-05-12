@@ -93,7 +93,8 @@
 
            // Update ALA promo when price changes
            document.getElementById('item-price').addEventListener('input', function() {
-             let newPrice = document.getElementById('item-price').value;
+             console.log("here");
+             let newPrice = document.getElementById('item-price').value * 100;
              document.getElementById('ala').setAttribute('data-amount', newPrice);
              affirm.ui.refresh();
            })
