@@ -28,7 +28,7 @@
     <style type="text/css" media="screen">
         body {
             margin: 1em;
-        } 
+        }
 
         .container {
             width: 372px;
@@ -69,7 +69,9 @@
                <img src="https://cdn1.affirm.com/images/badges/affirm-card_78x54.png" width="39" height="27"/>
                Pay with Affirm Split Pay
              </label>
-             <div class="affirm-promo" data-promo-size="296x196" data-promo-content="https://www.affirm.com/images/png/press-green_mark.png"></div>
+
+            <p id="ala" class="affirm-as-low-as" data-promo-id="promo_set_standard_gmat" data-amount="{{ (unit_price_dollars | float) * 100 }}"></p>
+
            </div>
            <!-- Checkout Submit Button -->
            <div class="col-xs-6 sidebar">
@@ -82,6 +84,22 @@
 
 
          <script type="application/javascript">
+           // Initialize prequal data & show prequal banner
+           let prequalData = {{ affirm_prequal | tojson | safe }};
+           affirm.ui.ready(function() {
+             affirm.prequal.set(prequalData);
+             affirm.ui.prequal.show();
+           });
+
+           // Update ALA promo when price changes
+           document.getElementById('item-price').addEventListener('input', function() {
+             let newPrice = document.getElementById('item-price').value;
+             document.getElementById('ala').setAttribute('data-amount', newPrice);
+             affirm.ui.refresh();
+           })
+
+
+           // Initialize and begin checkout
            var checkoutData = {{ affirm_checkout | tojson | safe }};
            function openCheckout(input) {
              var priceInput = document.getElementById("item-price");
