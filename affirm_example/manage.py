@@ -1,7 +1,7 @@
 import sys
 import os
 import os.path
-from flask_script import Server, Manager
+from flask.ext.script import Server, Manager
 from affirm_example import create_app
 import yaml
 
