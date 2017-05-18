@@ -137,21 +137,6 @@ def shopping_item_page():
     }
 
 
-    # This data is used to initialize the Affirm Prequal
-    affirm_prequal_data = {
-        "page_type": "product",
-        "items": [
-             {
-                 "sku": "ACME-SLR-NG-01",
-                 "item_url": url_for(".shopping_item_page", **kwargs),
-                 "display_name": "Acme SLR-NG",
-                 "unit_price": 10000,
-                 "qty": 1
-             }
-         ],
-    }
-
-
     if app.config["INJECT_CHECKOUT_AMENDMENT_URL"]:
         affirm_checkout_data["merchant"]["checkout_amendment_url"] = url_for(
             ".affirm_checkout_amendment", **kwargs)
@@ -161,7 +146,6 @@ def shopping_item_page():
         kwargs.update({'_external': True, '_scheme': 'https'})
     template_data = dict(
         affirm_checkout=affirm_checkout_data,
-        affirm_prequal = affirm_prequal_data,
         item_image_url=url_for(".static", filename="item.png", **kwargs),
         display_name="Acme SLR-NG",
         unit_price_dollars="100.00",
