@@ -82,6 +82,14 @@
 
 
          <script type="application/javascript">
+
+          // Initialize prequal data & show prequal banner
+           let prequalData = {{ affirm_prequal | tojson | safe }};
+           affirm.ui.ready(function() {
+             affirm.prequal.set(prequalData);
+             affirm.ui.prequal.show();
+           });
+
            var checkoutData = {{ affirm_checkout | tojson | safe }};
            function openCheckout(input) {
              var priceInput = document.getElementById("item-price");
