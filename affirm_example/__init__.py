@@ -108,7 +108,6 @@ def shopping_item_page():
 
         "config": {
             "user_confirmation_url_action": "POST",
-            "financial_product_key": app.config["AFFIRM"]["FINANCIAL_PRODUCT_KEY"],
         },
 
         "items": [
@@ -154,13 +153,17 @@ def shopping_item_page():
     return flask.render_template("index.html", **template_data)
 
 
-@app.route("/user_confirm", methods=["POST"])
+@app.route("/user_confirm", methods=["GET", "POST"])
 def user_confirm_page():
     """
     The page to render after the user completes checkout. Typically this will
     display a confirmation message to the user.
     """
-    checkout_token = flask.request.form["checkout_token"]
+
+    if flask.request.method == 'GET':
+        checkout_token = flask.request.args.get("checkout_token")
+    else:
+        checkout_token = flask.request.form["checkout_token"]
 
     checkout = get_checkout_from_token(checkout_token)
     import pprint
