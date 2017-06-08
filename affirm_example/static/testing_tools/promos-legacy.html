@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Promos - Legacy</title>
+	<link rel="stylesheet" type="text/css" href="/static/testing_tools/css/main.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="/static/testing_tools/js/main.js"></script>
+	<script>
+  (function(l,g,m,e,a,f,b){var d,c=l[m]||{},h=document.createElement(f),n=document.getElementsByTagName(f)[0],k=function(a,b,c){return function(){a[b]._.push([c,arguments])}};c[e]=k(c,e,"set");d=c[e];c[a]={};c[a]._=[];d._=[];c[a][b]=k(c,a,b);a=0;for(b="set add save post open empty reset on off trigger ready setProduct".split(" ");a<b.length;a++)d[b[a]]=k(c,e,b[a]);a=0;for(b=["get","token","url","items"];a<b.length;a++)d[b[a]]=function(){};h.async=!0;h.src=g[f];n.parentNode.insertBefore(h,n);delete g[f];d(g);l[m]=c})(window,_affirm_config,"affirm","checkout","ui","script","ready");
+  	affirm.ui.ready( function() { updateAffirmAsLowAs( 50000 ) } ); // change to your template value for product or cart price
+  function updateAffirmAsLowAs( amount ){
+    if ( ( amount == null ) || ( amount < 1000 ) ) { return; } // Only display as low as for items over $10 CHANGE FOR A DIFFERENT LIMIT
+    // payment estimate options
+    var options = {
+      apr: "0.10", // percentage assumed APR for loan
+      months: 12, // can be 3, 6, or 12
+      amount: amount // USD cents
+    };
+    try {
+      typeof affirm.ui.payments.get_estimate; /* try and access the function */
+    }
+    catch (e) {
+      return; /* stops this function from going any further - affirm functions are not loaded and will throw an error */
+    }
+    // use the payment estimate response
+    function handleEstimateResponse (payment_estimate) {
+      // the payment comes back in USD cents
+      var dollars = ( ( payment_estimate.payment + 99 ) / 100 ) | 0; // get dollars, round up, and convert to int
+      // Set affirm payment text
+      var a = document.getElementById('learn-more');
+      var iText = ('innerText' in a)? 'innerText' : 'textContent';
+      a[iText] = "Starting at $" + dollars + " a month. Learn More";
+      // open the customized Affirm learn more modal
+      a.onclick = payment_estimate.open_modal;
+      a.style.visibility = "visible";
+    };
+    // request a payment estimate
+    affirm.ui.payments.get_estimate(options, handleEstimateResponse);
+  }
+</script>
+<style type="text/css">
+	#refreshShit {
+		/*height:25px;*/
+		width:auto;
+		cursor: pointer;
+		display: inline-block;
+		padding:20px;
+		border:1px solid #ddd;
+		background:#eee;
+	}
+</style>
+</head>
+<body>
+
+<p id="learn-more">Learn more placeholder</p>
+
+<input id="newPrice" type="text"></input>
+<p></p>
+<button onclick="grabNewPrice()" id='refreshShit'>REFRESHALLTHETHINGS</button>
+<script src="/static/testing_tools/js/render.js"></script>
+<script>
+	document.getElementById('refreshShit').addEventListener('click',function(){grabNewPrice()});
+	function grabNewPrice() {
+		var a = document.getElementById('newPrice').value;
+		updateAffirmAsLowAs(a);
+		affirm.ui.refresh();
+	}
+</script>	
+
+</body>
+</html>
