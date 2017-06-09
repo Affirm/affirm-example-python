@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Example Pages</title>
+    <link rel="stylesheet" type="text/css" href="/static/testing_tools/css/main.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="/static/testing_tools/js/main.js"></script>
+</head>
+<body>
+  <div class="column">
+    <h2>Checkout</h2>
+      <ul>
+        <li><a class="dynamic_env" href="./checkout.html" id="checkout">Regular</a></li>
+        <li><a class="dynamic_env"  href="./checkout-vcn.html" id="checkoutVcn">VCN</a></li>
+      </ul>
+    <h2>Promos</h2>
+      <ul>
+        <li><a class="dynamic_env" href="./promos.html" id="promos">Current</a></li>
+        <li><a class="dynamic_env" href="./promos-legacy.html" id="promosLegacy">Legacy</a></li>
+      </ul>
+    <h2>Other</h2>
+    <ul>
+        <li><a class="dynamic_env" href="./prequal.html" id="prequal">Prequal</a></li>
+    </ul>
+  </div>
+  <script src="/static/testing_tools/js/render.js"></script>
+</body>
+</html>
