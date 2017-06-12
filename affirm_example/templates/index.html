@@ -56,7 +56,13 @@
          <![endif]-->
          <!-- Sample item image -->
          <div class="container">
-           <img src="{{item_image_url}}" width="300"/>
+           <!-- Checkout Submit Button -->
+           <div class="col-xs-6 sidebar">
+             <h3>Complete your checkout</h3>
+             <form>
+               <input type="button" class="btn btn-primary" value="Continue" id="submit-form" onclick="return openCheckout(this);"/>
+             </form>
+           </div>
            <div class="label">
              {{display_name}} <br>
              $<input id="item-price" class="price" value="{{ unit_price_dollars }}">
@@ -71,13 +77,10 @@
              </label>
              <div class="affirm-promo" data-promo-size="296x196" data-promo-content="https://www.affirm.com/images/png/press-green_mark.png"></div>
            </div>
-           <!-- Checkout Submit Button -->
-           <div class="col-xs-6 sidebar">
-             <h3>Complete your checkout</h3>
-             <form>
-               <input type="button" class="btn btn-primary" value="Continue" id="submit-form" onclick="return openCheckout(this);"/>
-             </form>
-           </div>
+
+          <img src="{{item_image_url}}" width="100"/>
+
+          
          </div>
 
 
