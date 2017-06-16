@@ -5,12 +5,12 @@
 	<title>Promos</title>
 	<link rel="stylesheet" type="text/css" href="/static/testing_tools/css/main.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="/static/testing_tools/js/main.js"></script>
+    <script src="/main.js"></script>
 	<script>
   (function(l,g,m,e,a,f,b){var d,c=l[m]||{},h=document.createElement(f),n=document.getElementsByTagName(f)[0],k=function(a,b,c){return function(){a[b]._.push([c,arguments])}};c[e]=k(c,e,"set");d=c[e];c[a]={};c[a]._=[];d._=[];c[a][b]=k(c,a,b);a=0;for(b="set add save post open empty reset on off trigger ready setProduct".split(" ");a<b.length;a++)d[b[a]]=k(c,e,b[a]);a=0;for(b=["get","token","url","items"];a<b.length;a++)d[b[a]]=function(){};h.async=!0;h.src=g[f];n.parentNode.insertBefore(h,n);delete g[f];d(g);l[m]=c})(window,_affirm_config,"affirm","checkout","ui","script","ready");
 </script>
 <style type="text/css">
-	#refreshShit {
+	#refresh {
 		/*height:25px;*/
 		width:auto;
 		cursor: pointer;
@@ -23,18 +23,35 @@
 </head>
 <body>
 
+<br/>
+<br/>
+<label>ALA promo ID
+    <input type="text" id="ala-id" value="promo_set_"/>
+</label>
+
+<label>Product Modal ID
+    <input type="text" id="product-id" value="promo_set_"/>
+</label>
+
+<label>Site Modal ID
+    <input type="text" id="site-id" value="promo_set_"/>
+</label>
+
 <p id="ala" class="affirm-as-low-as" data-promo-id="promo_set_" data-amount="5000"></p>
 
-<p class="affirm-product-modal" data-modal-id="promo_set_" data-amount="5000">click me</p>
+<p  class="affirm-product-modal" data-modal-id="promo_set_" data-amount="5000">click me, I'm a product modal</p>
 
-<p class="affirm-site-modal" data-modal-id="promo_set_">click me</p>
+<p class="affirm-site-modal" data-modal-id="promo_set_">click me, I'm a site modal</p>
 
-<input id="newPrice" type="text"></input>
+<label>ALA Price
+    <input id="newPrice" type="text" />
+</label>
+
 <p></p>
-<button onclick="grabNewPrice()" id='refreshShit'>REFRESHALLTHETHINGS</button>
+<button onclick="grabNewPrice()" id='refresh'>REFRESH</button>
 <script src="/static/testing_tools/js/render.js"></script>
 <script>
-	document.getElementById('refreshShit').addEventListener('click',function(){grabNewPrice();});
+	document.getElementById('refresh').addEventListener('click',function(){grabNewPrice();});
 	function grabNewPrice() {
 		var a = document.getElementById('newPrice').value;
 		document.getElementById('ala').setAttribute('data-amount',a);
@@ -44,6 +61,17 @@
 		}
 		affirm.ui.refresh();
 	}
+	$('#ala-id').change(function(){
+	    $('#ala').attr('data-promo-id', $('#ala-id').val());
+    });
+
+	$('#product-id').change(function(){
+	    $('.affirm-product-modal').attr('data-modal-id', $('#product-id').val());
+    });
+
+	$('#site-id').change(function(){
+	    $('#affirm-site-modal').attr('data-promo-id', $('#site-id').val());
+    });
 </script>	
 </body>
 </html>

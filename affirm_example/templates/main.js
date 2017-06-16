@@ -1,5 +1,9 @@
 // Declar global vars
-var _affirm_config = {};
+var _affirm_config = {
+        public_api_key:  "{{config['AFFIRM']['PUBLIC_API_KEY']}}",
+        script: "{{ config['AFFIRM']['AFFIRM_JS_URL'] }}",
+        api_url: "{{ config['AFFIRM']['API_URL'] }}"
+};
 var page_name = document.title;
 var current_page = document.location.origin + document.location.pathname;
 var envs = [
@@ -30,30 +34,7 @@ var pages = [
   "promos-legacy",
   "br",
   "prequal"];
-var domain_mapping = {
-  "prod": "affirm",
-  "stage": "affirm-stage",
-  "dev": "affirm-dev"};
 
-/*
-helpers:
-string -> object
-object -> string
-return properties of a given env code
-update a given url and add/remove a given a key pair from the query string
-
-functions:
-toggle visibility of HTML
-loop through links and update them
-grab page location and update it
-
-setup:
-build menus/lists/buttons
-*/
-
-
-
-// querystring -> array & object
 var qsParse = function (a) {
   var _qo = {},
   _qa = [];
@@ -221,92 +202,85 @@ switch(env){
   case 'prod-live':
   _affirm_config = {
     script:"https://cdn1.affirm.com/js/v2/affirm.js",
-    base_url:"https://affirm.com",
+    api_url:"https://affirm.com/api/v2",
     public_api_key:"xxxxxxxxx"
   };
   break;
   case 'prod-sandbox':
   _affirm_config = {
     script:"https://cdn1-sandbox.affirm.com/js/v2/affirm.js",
-    base_url:"https://sandbox.affirm.com",
+    api_url:"https://sandbox.affirm.com/api/v2",
     public_api_key:"xxxxxxxxxx"
   };
   break;
   case 'dev-special_1':
   _affirm_config = {
     script:"https://special-1.affirm-dev.com/js/v2/affirm.js",
-    base_url:"https://special-1.affirm-dev.com",
+    api_url:"https://special-1.affirm-dev.com/api/v2",
     public_api_key:"QAZKCCUVPDTP7RE2"
   };
   break;
   case 'dev-special_2':
   _affirm_config = {
     script:"https://special-2.affirm-dev.com/js/v2/affirm.js",
-    base_url:"https://special-2.affirm-dev.com",
+    api_url:"https://special-2.affirm-dev.com/api/v2",
     public_api_key:"QAZKCCUVPDTP7RE2"
   };
   break;
   case 'stage-int_1_1':
   _affirm_config = {
     script:"https://int-1-1.affirm-stage.com/js/v2/affirm.js",
-    base_url:"https://int-1-1.affirm-stage.com",
+    api_url:"https://int-1-1.affirm-stage.com/api/v2",
     public_api_key:"FND06LW8187URGAA"
   };
   break;
   case 'stage-int_1_2':
   _affirm_config = {
     script:"https://int-1-2.affirm-stage.com/js/v2/affirm.js",
-    base_url:"https://int-1-2.affirm-stage.com",
+    api_url:"https://int-1-2.affirm-stage.com/api/v2",
     public_api_key:"FND06LW8187URGAA"
   };
   break;
   case 'stage-int_1_3':
   _affirm_config = {
     script:"https://int-1-3.affirm-stage.com/js/v2/affirm.js",
-    base_url:"https://int-1-3.affirm-stage.com",
+    api_url:"https://int-1-3.affirm-stage.com/api/v2",
     public_api_key:"FND06LW8187URGAA"
   };
   break;
   case 'stage-int_1_4':
   _affirm_config = {
     script:"https://int-1-4.affirm-stage.com/js/v2/affirm.js",
-    base_url:"https://int-1-4.affirm-stage.com",
+    api_url:"https://int-1-4.affirm-stage.com/api/v2",
     public_api_key:"FND06LW8187URGAA"
   };
   break;
   case 'stage-int_2_4':
   _affirm_config = {
     script:"https://int-2-4.affirm-stage.com/js/v2/affirm.js",
-    base_url:"https://int-2-4.affirm-stage.com",
+    api_url:"https://int-2-4.affirm-stage.com/api/v2",
     public_api_key:"W3HRPZ1233KHHKPI"
   };
   break;
   case 'stage-int_2_11':
     _affirm_config = {
         script:"https://int-2-11.affirm-stage.com/js/v2/affirm.js",
-        base_url:"https://int-2-11.affirm-stage.com",
+        api_url:"https://int-2-11.affirm-stage.com/api/v2",
         public_api_key:"15C52NQVJ7J4HV63"
     };
   break;
   case 'stage-sandbox':
   _affirm_config = {
     script:"https://cdn1-sandbox.affirm-stage.com/js/v2/affirm.js",
-    base_url:"https://sandbox.affirm-stage.com",
+    api_url:"https://sandbox.affirm-stage.com/api/v2",
     public_api_key:"C2S4ECO7NTD9T5GO"
   };
   break;
   case 'localhost':
   _affirm_config = {
     script:"http://localhost:3000/v2/affirm.js",
-    base_url:"http://localhost:3000",
+    api_url:"http://localhost:3000",
     public_api_key:"xxxxxxxxxxxxxxxx"
-  };
-  break;
-  default:
-  _affirm_config = {
-    script:"https://cdn1-sandbox.affirm.com/js/v2/affirm.js",
-    base_url:"https://sandbox.affirm-stage.com",
-    public_api_key:"ARQBLCL7NAMBTZ7F"
   };
   break;
 }
@@ -336,7 +310,6 @@ env_heading.innerText = "environment";
 var env_list = document.createElement('ul');
 env_list.id = 'env_list';
 env_list.classList.add('hide');
-// env_list.classList.add('column');
 for (var i = 0; i < envs.length; i++) {
   var _env_item;
   if (envs[i] === "br") {
@@ -351,7 +324,7 @@ for (var i = 0; i < envs.length; i++) {
     _env_item.appendChild(_env_link);
   }
   env_list.appendChild(_env_item);
-};
+}
 
 // Build the index
 var page_select = document.createElement('div');
@@ -400,7 +373,7 @@ api_key_submit.id = 'api_key_submit';
 api_key_submit.type = 'button';
 api_key_submit.value = 'Update API key';
 merchant_config.id = 'merchant_config';
-merchant_config.innerHTML = " You're pointed to " + env + " with public API key " + _affirm_config.public_api_key;
+merchant_config.innerHTML = " You're pointed to " + _affirm_config.api_url + " with public API key " + _affirm_config.public_api_key;
 
 api_key_select.appendChild(api_key_heading);
 api_key_select.appendChild(api_key_form);
