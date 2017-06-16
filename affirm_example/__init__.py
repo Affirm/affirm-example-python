@@ -258,6 +258,11 @@ def admin_do(charge_action, charge_id):
     return "<pre>%s</pre>" % json.dumps(response, indent=2, sort_keys=True)
 
 
+@app.route("/main.js")
+def main_js():
+    return flask.render_template("main.js")
+
+
 def create_app(settings):
 
     @app.route("/favicon.ico")
