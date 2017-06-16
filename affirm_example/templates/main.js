@@ -142,7 +142,7 @@ function envParse(a) {
 
 // Query vars
 var show = [],
-env = "prod-sandbox";
+env = '';
 var api_key;
 
 var initialQs = location.search.replace('?','');
