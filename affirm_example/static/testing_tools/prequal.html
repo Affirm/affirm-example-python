@@ -1,125 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width">
-	<title>Prequal Test</title>
-	<link rel="stylesheet" type="text/css" href="/static/testing_tools/css/main.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Prequal Test</title>
+    <link rel="stylesheet" type="text/css" href="/static/testing_tools/css/main.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="/main.js"></script>
-	<script>
-		// Begin Affirm JS embed code
-		// =======================
+    <script>
+      // Begin Affirm JS embed code
+      // =======================
 		(function(l,g,m,e,a,f,b){var d,c=l[m]||{},h=document.createElement(f),n=document.getElementsByTagName(f)[0],k=function(a,b,c){return function(){a[b]._.push([c,arguments])}};c[e]=k(c,e,"set");d=c[e];c[a]={};c[a]._=[];d._=[];c[a][b]=k(c,a,b);a=0;for(b="set add save post open empty reset on off trigger ready setProduct".split(" ");a<b.length;a++)d[b[a]]=k(c,e,b[a]);a=0;for(b=["get","token","url","items"];a<b.length;a++)d[b[a]]=function(){};h.async=!0;h.src=g[f];n.parentNode.insertBefore(h,n);delete g[f];d(g);l[m]=c})(window,_affirm_config,"affirm","checkout","ui","script","ready");
-		// =======================
-		// End Affirm JS embed code
-	</script>
+      // =======================
+      // End Affirm JS embed code
+    </script>
 </head>
 <body style="background-color:#eee">
-	<div class="column">
-		<h2>Config</h2>
-		<div>
-			<h4>Merchant</h4>
-			<table>
-				<tr>
-					<td>Display Name</td>
-					<td><input type="text" value="Example Merchant Name" id="merchantName"></td>
-				</tr>
-			</table>
-		</div>
-			<div>
-			<h4>Prequal</h4>
-			<table>
-				<tr>
-					<td>Page Type</td>
-					<td><input type="text" value="home" id="pageType"></td>
-				</tr>
-			</table>
-		</div>
-		<div>
-			<h4>Items</h4>
-			<table>
-				<tr>
-					<td>Display Name</td>
-					<td><input type="text" value="Example Product Name" id="itemName"></td>
-				</tr>
-				<tr>
-					<td>URL</td>
-					<td><input type="text" value="https://www.merchantname.com/best_product_ever" id="itemUrl"></td>
-				</tr>
-				<tr>
-					<td>Quantity</td>
-					<td><input type="number" value="1" id="itemQuantity"></td>
-				</tr>
-				<tr>
-					<td>Unit Price</td>
-					<td><input type="number" value="400000" id="itemPrice"></td>
-				</tr>
-				<tr>
-					<td>SKU</td>
-					<td><input type="text" value="ABC-123" id="itemSku"></td>
-				</tr>
-			</table>
-		</div>
-	</div>
-	<div class="column">
-		<h2>Functionality</h2>
-		<input type="button" class="button3" id="setPrequal" value="Set Prequal Widget">
-		<input type="button" class="button1" id="showPrequal" value="Show Prequal Widget">
-		<input type="button" class="button2" id="launchPrequal" value="Launch Prequal Flow">
-	</div>
-	<script type="text/javascript">
-		var launchPrequalButton = document.getElementById('launchPrequal'),
-		showPrequalButton = document.getElementById('showPrequal'),
-		setPrequalButton = document.getElementById('setPrequal');
-		setPrequalButton.addEventListener('click', setPrequal, false);
-		showPrequalButton.addEventListener('click', showPrequal, false);
-		launchPrequalButton.addEventListener('click', launchPrequal, false);
-		function showPrequal() {
-			affirm.ui.prequal.show();
-		}
-		function launchPrequal() {
-			affirm.ui.prequal.launchPrequalFlow();
-		}
-		function setPrequal() {
-			// Grab form values
-			var merchantName = document.getElementById('merchantName').value,
-			pageType = document.getElementById('pageType').value,
-			itemName = document.getElementById('itemName').value,
-			itemUrl = document.getElementById('itemUrl').value,
-			itemQuantity = document.getElementById('itemQuantity').value,
-			itemPrice = document.getElementById('itemPrice').value,
-			itemSku = document.getElementById('itemSku').value
+    <div class="column">
+        <h2>Config</h2>
+        <div>
+            <h4>Merchant</h4>
+            <table>
+                <tr>
+                    <td>Display Name</td>
+                    <td><input type="text" value="Example Merchant Name" id="merchantName"></td>
+                </tr>
+            </table>
+        </div>
+        <div>
+            <h4>Prequal</h4>
+            <table>
+                <tr>
+                    <td>Mode (modal | popup)</td>
+                    <td><input type="text" value="modal" id="widgetMode"></td>
+                </tr>
+                <tr>
+                    <td>Page Type</td>
+                    <td><input type="text" value="home" id="pageType"></td>
+                </tr>
+            </table>
+        </div>
+        <div>
+            <h4>Items</h4>
+            <table>
+                <tr>
+                    <td>Display Name</td>
+                    <td><input type="text" value="Example Product Name" id="itemName"></td>
+                </tr>
+                <tr>
+                    <td>URL</td>
+                    <td><input type="text" value="https://www.merchantname.com/best_product_ever" id="itemUrl"></td>
+                </tr>
+                <tr>
+                    <td>Quantity</td>
+                    <td><input type="number" value="1" id="itemQuantity"></td>
+                </tr>
+                <tr>
+                    <td>Unit Price</td>
+                    <td><input type="number" value="400000" id="itemPrice"></td>
+                </tr>
+                <tr>
+                    <td>SKU</td>
+                    <td><input type="text" value="ABC-123" id="itemSku"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="column">
+        <h2>Functionality</h2>
+        <input type="button" class="button3" id="setPrequal" value="Set Prequal Widget">
+        <input type="button" class="button1" id="showPrequal" value="Show Prequal Widget">
+        <input type="button" class="button2" id="launchPrequal" value="Launch Prequal Flow">
+    </div>
+    <script type="text/javascript">
+      var launchPrequalButton = document.getElementById('launchPrequal'),
+        showPrequalButton = document.getElementById('showPrequal'),
+        setPrequalButton = document.getElementById('setPrequal')
+      ;
 
-		    var a = {
-		    	"merchant_name": merchantName,
-    			"page_type": pageType,
-    			"item": [{
-	        		"display_name": itemName,
-	        	    "item_url": itemUrl,
-	            	"sku": itemSku,
-	            	"unit_price": itemPrice,
-	            	"qty": itemQuantity
-        		}]
-    		}
-    		affirm.prequal.set(a);
-    		setPrequalButton.classList.toggle('working');
-			setPrequalButton.value = "Prequal Object Set!";
-			setTimeout(function() {
-				setPrequalButton.value = "Set Prequal Object";
-				setPrequalButton.classList.toggle('working');
-			}, 1500);
-		}
-		var IE = function() {
-			var ua = window.navigator.userAgent;
-			if (ua.indexOf('MSIE ') > 0) {return true}
-			if (ua.indexOf('Trident/') > 0) {return true}
-			else {return false}
-		}
-		if (IE) {
-			launchPrequalButton.style.visibility('hidden');
-		}
-	</script>
-	<script src="/static/testing_tools/js/render.js"></script>
+      setPrequalButton.addEventListener('click', setPrequal, false);
+      showPrequalButton.addEventListener('click', showPrequal, false);
+      launchPrequalButton.addEventListener('click', launchPrequal, false);
+
+      function showPrequal() {
+        affirm.ui.prequal.show();
+      }
+
+      function launchPrequal() {
+        affirm.ui.prequal.launchPrequalFlow();
+      }
+
+      function setPrequal() {
+        // Grab form values
+        var merchantName = document.getElementById('merchantName').value,
+          mode = document.getElementById('widgetMode').value,
+          pageType = document.getElementById('pageType').value,
+          itemName = document.getElementById('itemName').value,
+          itemUrl = document.getElementById('itemUrl').value,
+          itemQuantity = document.getElementById('itemQuantity').value,
+          itemPrice = document.getElementById('itemPrice').value,
+          itemSku = document.getElementById('itemSku').value
+        ;
+
+        affirm.prequal.set({
+          merchant_name: merchantName,
+          mode: mode,
+          page_type: pageType,
+          item: [{
+            display_name: itemName,
+            item_url: itemUrl,
+            sku: itemSku,
+            unit_price: itemPrice,
+            qty: itemQuantity,
+          }],
+        });
+        setPrequalButton.classList.toggle('working');
+        setPrequalButton.value = 'Prequal Object Set!';
+        setTimeout(function () {
+          setPrequalButton.value = 'Set Prequal Object';
+          setPrequalButton.classList.toggle('working');
+        }, 1500);
+      }
+
+      var IE = function () {
+        var ua = window.navigator.userAgent;
+        return (ua.indexOf('MSIE ') > 0 || ua.indexOf('Trident/') > 0);
+      };
+      if (IE()) {
+        launchPrequalButton.style.visibility('hidden');
+      }
+    </script>
+    <script src="/static/testing_tools/js/render.js"></script>
 </body>
 </html>

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"><![endif]-->
+<!--[if IE 7]>   <html class="no-js lt-ie9 lt-ie8"><![endif]-->
+<!--[if IE 8]>   <html class="no-js lt-ie9"><![endif]-->
+<!--[if gt IE 8]><html class="no-js"><![endif]-->
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -28,7 +28,7 @@
     <style type="text/css" media="screen">
         body {
             margin: 1em;
-        } 
+        }
 
         .container {
             width: 372px;
@@ -47,62 +47,59 @@
         }
     </style>
     <body>
-         <!--[if lt IE 7]>
-             <p class="chromeframe">
-             You are using an <strong>outdated</strong> browser.
-              Please <a href="http://browsehappy.com/">upgrade your browser</a> or
-               <a href="http://www.google.com/chromeframe/?redirect=true">activatei
-                Google Chrome Frame</a> to improve your experience.</p>
-         <![endif]-->
-         <!-- Sample item image -->
-         <div class="container">
-           <!-- Checkout Submit Button -->
-           <div class="col-xs-6 sidebar">
-             <h3>Complete your checkout</h3>
-             <form>
-               <input type="button" class="btn btn-primary" value="Continue" id="submit-form" onclick="return openCheckout(this);"/>
-             </form>
-           </div>
-           <div class="label">
-             {{display_name}} <br>
-             $<input id="item-price" class="price" value="{{ unit_price_dollars }}">
-           </div>
-           <br>
-           <!-- Payment Type Selector -->
-           <div class="form-group col-xs-12">
-             <label for="affirm_checkout_option">
-               <input type="radio" name="payment_type" id="affirm_checkout_option" value="affirm" checked/>
-               <img src="https://cdn1.affirm.com/images/badges/affirm-card_78x54.png" width="39" height="27"/>
-               Pay with Affirm Split Pay
-             </label>
-             <div class="affirm-promo" data-promo-size="296x196" data-promo-content="https://www.affirm.com/images/png/press-green_mark.png"></div>
-           </div>
-
-          <img src="{{item_image_url}}" width="100"/>
-
-          
-         </div>
-
-
-         <script type="application/javascript">
-
+        <!--[if lt IE 7]>
+        <p class="chromeframe">
+            You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your
+            browser</a> or
+            <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your
+            experience.
+        </p>
+        <![endif]-->
+        <!-- Sample item image -->
+        <div class="container">
+            <!-- Checkout Submit Button -->
+            <div class="col-xs-6 sidebar">
+                <h3>Complete your checkout</h3>
+                <form>
+                    <input type="button" class="btn btn-primary" value="Continue" id="submit-form"
+                           onclick="return openCheckout(this);"/>
+                </form>
+            </div>
+            <div class="label">
+                {{display_name}} <br>
+                $<input id="item-price" class="price" value="{{ unit_price_dollars }}">
+            </div>
+            <br>
+            <!-- Payment Type Selector -->
+            <div class="form-group col-xs-12">
+                <label for="affirm_checkout_option">
+                    <input type="radio" name="payment_type" id="affirm_checkout_option" value="affirm" checked/>
+                    <img src="https://cdn1.affirm.com/images/badges/affirm-card_78x54.png" width="39" height="27"/>
+                    Pay with Affirm Split Pay
+                </label>
+                <div class="affirm-promo" data-promo-size="296x196"
+                     data-promo-content="https://www.affirm.com/images/png/press-green_mark.png"></div>
+            </div>
+            <img src="{{item_image_url}}" width="100"/>
+        </div>
+        <script type="application/javascript">
           // Initialize prequal data & show prequal banner
-           let prequalData = {{ affirm_prequal | tojson | safe }};
-           affirm.ui.ready(function() {
-             affirm.prequal.set(prequalData);
-             affirm.ui.prequal.show();
-           });
+          let prequalData = {{ affirm_prequal | tojson | safe }};
+          affirm.ui.ready(function () {
+            affirm.prequal.set(prequalData);
+            affirm.ui.prequal.show();
+          });
 
-           var checkoutData = {{ affirm_checkout | tojson | safe }};
-           function openCheckout(input) {
-             var priceInput = document.getElementById("item-price");
-             var price = Math.round(Number(priceInput.value) * 100);
-             checkoutData.total = checkoutData.items[0].unit_price = price;
+          var checkoutData = {{ affirm_checkout | tojson | safe }};
+          function openCheckout(input) {
+            var priceInput = document.getElementById('item-price');
+            var price = Math.round(Number(priceInput.value) * 100);
+            checkoutData.total = checkoutData.items[0].unit_price = price;
 
-             affirm.checkout(checkoutData);
-             affirm.checkout.open();
-             return false; // return false so page doesn't reload
-           }
-         </script>
+            affirm.checkout(checkoutData);
+            affirm.checkout.open();
+            return false; // return false so page doesn't reload
+          }
+        </script>
     </body>
 </html>
