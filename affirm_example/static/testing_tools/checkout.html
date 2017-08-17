@@ -16,253 +16,261 @@
 	</script>
 </head>
 <body>
-	<form onsubmit="checkoutHandler()" action="">
-		<div class="column">
-			<h2>Config</h2>
-			<div>
-				<h4>Merchant</h4>
-				<table>
-					<tr>
-						<td>Display Name</td>
-						<td><input type="text" value="Example Merchant Name" id="merchantName"></td>
-					</tr>
-				</table>
-			</div>
-			<div>
-				<h4>Customer</h4>
-				<table>
-					<tr>
-						<td>First Name</td>
-						<td><input type="text" value="Ben" id="firstName"></td>
-					</tr>
-					<tr>
-						<td>Last Name</td>
-						<td><input type="text" value="Mo" id="lastName"></td>
-					</tr>
-					<tr>
-						<td>Adddress 1</td>
-						<td><input type="text" value="633 Folsom Street" id="addressLine1"></td>
-					</tr>
-					<tr>
-						<td>Address 2</td>
-						<td><input type="text" value="Floor 7" id="addressLine2"></td>
-					</tr>
-					<tr>
-						<td>City</td>
-						<td><input type="text" value="San Francisco" id="city"></td>
-					</tr>
-					<tr>
-						<td>State</td>
-						<td><input type="text" value="CA" id="state"></td>
-					</tr>
-					<tr>
-						<td>ZIP</td>
-						<td><input type="text" value="94107" id="zipcode"><br/></td>
-					</tr>
-					<tr>
-						<td>Phone</td>
-						<td><input type="text" value="8888888888" id="phoneNumber"></td>
-					</tr>
-					<tr>
-						<td>Email</td>   
-						<td><input type="text" value="test@affirm.com" id="email"><br/></td>
-					</tr>
-				</table>
-			</div>
-			<div>
-				<h4>Product</h4>
-				<table>
-					<tr>
-						<td>Product Name</td>
-						<td><input type="text" id="productName" value="Best Product Ever"></td>
-					</tr>
-					<tr>
-						<td>Unit Price</td>
-						<td><input type="number" id="unitPrice" value="10000"></td>
-					</tr>
-					<tr>
-						<td>Product Quantity</td>
-						<td><input type="text" id="productQuantity" value="4"></td>
-					</tr>
-				</table>
-			</div>
-			<div>
-				<h4>Discounts</h4>
-				<table>
-					<tr>
-						<td>Code</td>
-						<td><input type="text" id="discountCode" value="10percentoff"></td>
-					</tr>
-					<tr>
-						<td>Name</td>
-						<td><input type="text" id="discountName" value="10% off"></td>
-					</tr>
-					<tr>
-						<td>Amount</td>
-						<td><input type="number" id="discountAmount" value="4000"></td>
-					</tr>
-				</table>
-			</div>
-			<div>
-				<h4>Totals</h4>
-				<table>
-					<tr>
-						<td>Subtotal</td>
-						<td><input type="number" id="subTotal" value="40000"></td>
-					</tr>
-					<tr>
-						<td>Discount</td>
-						<td><input type="number" id="discount" value="5000"></td>
-					</tr>
-					<tr>
-						<td>Shipping</td>
-						<td><input type="number" id="shipping" value="2000"></td>
-					</tr>
-					<tr>
-						<td>Tax</td>
-						<td><input type="number" id="tax" value="4000"></td>
-					</tr>
-					<tr>
-						<td>Total</td>
-						<td><input type="number" id="total" value="40000"></td>
-					</tr>
-				</table>
-			</div>
-		</div>
-		<div class="column">
-			<h2>Functionality</h2>
-			<input class="button1" id="launchCheckout" type="button"  value="Checkout with Affirm">
-		</div>
-	</form>
-	<script>
-	// Global variables
-	// -----------------------
+	<form onsubmit="checkoutHandler();" action="">
+        <div class="column">
+            <h2>Config</h2>
+            <div>
+                <table>
+                    <tr>
+                        <td>Mode (modal | redirect)</td>
+                        <td><input value="modal" id="widgetMode"></td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <h4>Merchant</h4>
+                <table>
+                    <tr>
+                        <td>Display Name</td>
+                        <td><input value="Example Merchant Name" id="merchantName"></td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <h4>Customer</h4>
+                <table>
+                    <tr>
+                        <td>First Name</td>
+                        <td><input value="Ben" id="firstName"></td>
+                    </tr>
+                    <tr>
+                        <td>Last Name</td>
+                        <td><input value="Mo" id="lastName"></td>
+                    </tr>
+                    <tr>
+                        <td>Adddress 1</td>
+                        <td><input value="633 Folsom Street" id="addressLine1"></td>
+                    </tr>
+                    <tr>
+                        <td>Address 2</td>
+                        <td><input value="Floor 7" id="addressLine2"></td>
+                    </tr>
+                    <tr>
+                        <td>City</td>
+                        <td><input value="San Francisco" id="city"></td>
+                    </tr>
+                    <tr>
+                        <td>State</td>
+                        <td><input value="CA" id="state"></td>
+                    </tr>
+                    <tr>
+                        <td>ZIP</td>
+                        <td><input value="94107" id="zipcode"><br/></td>
+                    </tr>
+                    <tr>
+                        <td>Phone</td>
+                        <td><input value="8888888888" id="phoneNumber"></td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td><input value="test@affirm.com" id="email"><br/></td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <h4>Product</h4>
+                <table>
+                    <tr>
+                        <td>Product Name</td>
+                        <td><input id="productName" value="Best Product Ever"></td>
+                    </tr>
+                    <tr>
+                        <td>Unit Price</td>
+                        <td><input type="number" id="unitPrice" value="10000"></td>
+                    </tr>
+                    <tr>
+                        <td>Product Quantity</td>
+                        <td><input id="productQuantity" value="4"></td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <h4>Discounts</h4>
+                <table>
+                    <tr>
+                        <td>Code</td>
+                        <td><input id="discountCode" value="10percentoff"></td>
+                    </tr>
+                    <tr>
+                        <td>Name</td>
+                        <td><input id="discountName" value="10% off"></td>
+                    </tr>
+                    <tr>
+                        <td>Amount</td>
+                        <td><input type="number" id="discountAmount" value="4000"></td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <h4>Totals</h4>
+                <table>
+                    <tr>
+                        <td>Subtotal</td>
+                        <td><input type="number" id="subTotal" value="40000"></td>
+                    </tr>
+                    <tr>
+                        <td>Discount</td>
+                        <td><input type="number" id="discount" value="5000"></td>
+                    </tr>
+                    <tr>
+                        <td>Shipping</td>
+                        <td><input type="number" id="shipping" value="2000"></td>
+                    </tr>
+                    <tr>
+                        <td>Tax</td>
+                        <td><input type="number" id="tax" value="4000"></td>
+                    </tr>
+                    <tr>
+                        <td>Total</td>
+                        <td><input type="number" id="total" value="40000"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="column">
+            <h2>Functionality</h2>
+            <input class="button1" id="launchCheckout" type="button" value="Checkout with Affirm">
+        </div>
+    </form>
+    <script>
+      // Global variables
+      // -----------------------
 
-		// Use current location
-		var baseURL = location.href.substring(0, location.href.lastIndexOf("/")+1);
-		var currentLocation = location.href;
-		var confirmLocation = baseURL + "order_confirmation.php?env=live";
+      // Use current location
+      var baseURL = location.href.substring(0, location.href.lastIndexOf('/') + 1);
+      var currentLocation = location.href;
+      var confirmLocation = baseURL + 'order_confirmation.php?env=live';
 
-	// Checkout
-	// -----------------------
-		// Checkout button
-		var checkoutButton = document.getElementById('launchCheckout');
-		checkoutButton.addEventListener('click', checkoutHandler, false);
-		document.body.onkeypress=function(e){
-			if(e.keyCode==13){
-				checkoutButton.click();
-			}
-		}
+      // Checkout
+      // -----------------------
+      // Checkout button
+      var checkoutButton = document.getElementById('launchCheckout');
+      checkoutButton.addEventListener('click', checkoutHandler, false);
+      document.body.onkeypress = function (e) {
+        if (e.keyCode == 13) {
+          checkoutButton.click();
+        }
+      };
 
-		// Checkout function
-		function checkoutHandler() {
+      // Checkout function
+      function checkoutHandler() {
+        checkoutButton.value = 'Redirecting to Affirm...';
+        checkoutButton.style = 'background:#333';
 
-			checkoutButton.value = "Redirecting to Affirm...";
-			checkoutButton.style = "background:#333";
+        // Grab form values
+        var widgetMode = document.getElementById('widgetMode').value,
+          merchantName = document.getElementById('merchantName').value,
+          billingFirst = document.getElementById('firstName').value,
+          billingLast = document.getElementById('lastName').value,
+          billingAddress1 = document.getElementById('addressLine1').value,
+          billingAddress2 = document.getElementById('addressLine2').value,
+          billingCity = document.getElementById('city').value,
+          billingState = document.getElementById('state').value,
+          billingEmail = document.getElementById('email').value,
+          billingZip = document.getElementById('zipcode').value,
+          billingPhone = document.getElementById('phoneNumber').value,
+          productName = document.getElementById('productName').value,
+          productQuantity = document.getElementById('productQuantity').value,
+          unitPrice = document.getElementById('unitPrice').value,
+          tax = document.getElementById('tax').value,
+          shipping = document.getElementById('shipping').value,
+          discount = document.getElementById('discount').value,
+          total = document.getElementById('total').value;
 
-			// Grab form values
-			var merchantName = document.getElementById('merchantName').value,
-			billingFirst = document.getElementById('firstName').value,
-			billingLast = document.getElementById('lastName').value,
-			billingAddress1 = document.getElementById('addressLine1').value,
-			billingAddress2 = document.getElementById('addressLine2').value,
-			billingCity = document.getElementById('city').value,
-			billingState = document.getElementById('state').value,
-			billingEmail = document.getElementById('email').value,
-			billingZip = document.getElementById('zipcode').value,
-			billingPhone = document.getElementById('phoneNumber').value,
-			productName = document.getElementById('productName').value,
-			productQuantity = document.getElementById('productQuantity').value,
-			unitPrice = document.getElementById('unitPrice').value,
-			tax = document.getElementById('tax').value,
-			shipping = document.getElementById('shipping').value,
-			discount = document.getElementById('discount').value,
-			total = document.getElementById('total').value;
+        // Define checkout object
+        affirm.checkout({
+          // Financial Product Key is provided along with your API keys
+          // "config": {
+          // 	"financial_product_key":"CN29VP56R79EMSEI",
+          // },
 
-			// Define checkout object
-			affirm.checkout({
-				
-				// Financial Product Key is provided along with your API keys
-				// "config": {
-				// 	"financial_product_key":"CN29VP56R79EMSEI",
-				// },
+          // Define URLs for the two outcomes of the checkout
+          merchant: {
+            name: merchantName,
+            // User is sent to this URL if they voluntarily cancel/close checkout, or are denied
+            user_cancel_url: currentLocation,
+            // User is sent to this URL if the checkout is successful
+            user_confirmation_url: confirmLocation,
+            // This is always POST
+            user_confirmation_url_action: 'POST',
+          },
 
-				// Define URLs for the two outcomes of the checkout
-				"merchant": {
-					"name": merchantName,
-					// User is sent to this URL if they voluntarily cancel/close checkout, or are denied
-					"user_cancel_url": currentLocation,
-					// User is sent to this URL if the checkout is successful
-					"user_confirmation_url": confirmLocation,	
-					// This is always 'POST'
-					"user_confirmation_url_action" : "POST"
-				},
+          // "financing_program":"program_2",
+          // "financing_program":"zero_pct_3_6_12_no_standard",
+          // "financing_program":"standard_3_6",
+          // Add each product to this array
+          items: [{
+            display_name: productName,
+            sku: '',
+            unit_price: unitPrice,
+            qty: productQuantity,
+            item_image_url: 'http://merchantsite.com/images/awesome-pants.jpg',
+            item_url: 'http://merchantsite.com/products/awesome-pants.html',
+          }],
 
-					// "financing_program":"program_2",
-				// "financing_program":"zero_pct_3_6_12_no_standard",
-					// "financing_program":"standard_3_6",
-				// Add each product to this array
-				"items": [{
-					"display_name": productName,
-					"sku": "",
-					"unit_price": unitPrice,
-					"qty": productQuantity,
-					"item_image_url": "http://merchantsite.com/images/awesome-pants.jpg",
-					"item_url": "http://merchantsite.com/products/awesome-pants.html"
-				}],
+          // Add each discount that applies
+          discounts: {
+            // The name of each discount is the name of the nested discount object
+            discountABC123: {
+              discount_amount: 120,
+              discount_display_name: 'my discount name',
+            },
+          },
 
-				// Add each discount that applies
-				"discounts": {
-					// The name of each discount is the name of the nested discount object
-					"discountABC123": {
-						"discount_amount": 120,
-						"discount_display_name": "my discount name"
-					}
-				},
+          order_id: '123456789',
+          metadata: {
+            mode: widgetMode,
+            shipping_type: 'UPS Ground',
+          },
+          shipping: {
+            name: {
+              first: billingFirst,
+              last: billingLast,
+            },
+            address: {
+              line1: billingAddress1,
+              line2: billingAddress2,
+              city: billingCity,
+              state: billingState,
+              zipcode: billingZip,
+            },
+            phone_number: billingPhone,
+            email: billingEmail,
+          },
+          billing: {
+            name: {
+              first: billingFirst,
+              last: billingLast,
+            },
+            address: {
+              line1: billingAddress1,
+              line2: billingAddress2,
+              city: billingCity,
+              state: billingState,
+              zipcode: billingZip,
+            },
+            phone_number: billingPhone,
+            email: billingEmail,
+          },
+          shipping_amount: shipping,
+          tax_amount: tax,
+          total: total,
+        });
 
-				"order_id": '123456789',
-				"metadata": {
-					"shipping_type": "UPS Ground"
-				},
-				"shipping": {
-					"name": {
-						"first": billingFirst,
-						"last": billingLast
-					},
-					"address": {
-						"line1": billingAddress1,
-						"line2": billingAddress2,
-						"city": billingCity,
-						"state": billingState,
-						"zipcode": billingZip
-					},
-					"phone_number": billingPhone,
-					"email": billingEmail,
-				},
-				"billing": {
-					"name": {
-						"first": billingFirst,
-						"last": billingLast
-					},
-					"address": {
-						"line1": billingAddress1,
-						"line2": billingAddress2,
-						"city": billingCity,
-						"state": billingState,
-						"zipcode": billingZip
-					},
-					"phone_number": billingPhone,
-					"email": billingEmail,
-				},
-				"shipping_amount":shipping,
-				"tax_amount": tax,
-				"total":total
-			});
-
-			// Initialize Affirm checkout
-			affirm.checkout.post();
-		}
-	</script>
-	<script src="/static/testing_tools/js/render.js"></script>
+        // Initialize Affirm checkout
+        affirm.checkout.post();
+      }
+    </script>
+    <script src="/static/testing_tools/js/render.js"></script>
 </body>
 </html>
