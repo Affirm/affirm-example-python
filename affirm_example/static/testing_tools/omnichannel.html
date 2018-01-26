@@ -257,5 +257,29 @@
             contentType: "application/json"
         });
     }
+
+    // ****** Everything below is from promos.html. This is to test prequal along with as low as for the 
+    // merge prequal and promos epic
+    document.getElementById('refresh').addEventListener('click',function(){grabNewPrice();});
+	function grabNewPrice() {
+		var a = document.getElementById('newPrice').value;
+		document.getElementById('ala').setAttribute('data-amount',a);
+		var c = document.getElementsByClassName('affirm-product-modal');
+		for (var i = c.length - 1; i >= 0; i--) {
+			c[i].setAttribute('data-amount',a);
+		}
+		affirm.ui.refresh();
+	}
+	$('#ala-id').change(function(){
+	    $('#ala').attr('data-promo-id', $('#ala-id').val());
+    });
+
+	$('#product-id').change(function(){
+	    $('.affirm-product-modal').attr('data-modal-id', $('#product-id').val());
+    });
+
+	$('#site-id').change(function(){
+	    $('#affirm-site-modal').attr('data-promo-id', $('#site-id').val());
+    });
 </script>
 </html>

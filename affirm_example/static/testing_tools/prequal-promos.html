@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Prequal Test</title>
+    <link rel="stylesheet" type="text/css" href="/static/testing_tools/css/main.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="/main.js"></script>
+    <script>
+      // Begin Affirm JS embed code
+      // =======================
+		(function(l,g,m,e,a,f,b){var d,c=l[m]||{},h=document.createElement(f),n=document.getElementsByTagName(f)[0],k=function(a,b,c){return function(){a[b]._.push([c,arguments])}};c[e]=k(c,e,"set");d=c[e];c[a]={};c[a]._=[];d._=[];c[a][b]=k(c,a,b);a=0;for(b="set add save post open empty reset on off trigger ready setProduct".split(" ");a<b.length;a++)d[b[a]]=k(c,e,b[a]);a=0;for(b=["get","token","url","items"];a<b.length;a++)d[b[a]]=function(){};h.async=!0;h.src=g[f];n.parentNode.insertBefore(h,n);delete g[f];d(g);l[m]=c})(window,_affirm_config,"affirm","checkout","ui","script","ready");
+      // =======================
+      // End Affirm JS embed code
+    </script>
+</head>
+<body style="background-color:#eee">
+  <div>
+    <br/>
+    This page is used to test the new merged promoset-prequal flow when there is also a prequal modal
+    accessible from a prequal banner
+  </div>
+
+    <div class="column">
+    <br/>
+    <br/>
+    <h1>Promo Related:</h1>
+    <label>ALA promo ID
+        <input type="text" id="ala-id" value="promo_set_"/>
+    </label>
+
+    <label>Product Modal ID
+        <input type="text" id="product-id" value="promo_set_"/>
+    </label>
+
+    <label>Site Modal ID
+        <input type="text" id="site-id" value="promo_set_"/>
+    </label>
+
+    <p id="ala" class="affirm-as-low-as" data-promo-id="promo_set_" data-amount="5000"></p>
+
+    <p  class="affirm-product-modal" data-modal-id="promo_set_" data-amount="5000">click me, I'm a product modal</p>
+
+    <p class="affirm-site-modal" data-modal-id="promo_set_">click me, I'm a site modal</p>
+
+    <label>ALA Price
+        <input id="newPrice" type="text" />
+    </label>
+
+    <p></p>
+    <button onclick="grabNewPrice()" id='refresh'>REFRESH</button>
+  </div>
+
+  <br/>
+  <br/>
+  <h1>Prequal Related:</h1>
+    <div class="column">
+        <h2>Config</h2>
+        <div>
+            <h4>Merchant</h4>
+            <table>
+                <tr>
+                    <td>Display Name</td>
+                    <td><input value="Example Merchant Name" id="merchantName"></td>
+                </tr>
+            </table>
+        </div>
+        <div>
+            <h4>Prequal</h4>
+            <table>
+                <tr>
+                    <td>Mode (modal | popup)</td>
+                    <td><input value="modal" id="widgetMode"></td>
+                </tr>
+                <tr>
+                    <td>Page Type</td>
+                    <td><input value="home" id="pageType"></td>
+                </tr>
+            </table>
+        </div>
+        <div>
+            <h4>Items</h4>
+            <table>
+                <tr>
+                    <td>Display Name</td>
+                    <td><input value="Example Product Name" id="itemName"></td>
+                </tr>
+                <tr>
+                    <td>URL</td>
+                    <td><input value="https://www.merchantname.com/best_product_ever" id="itemUrl"></td>
+                </tr>
+                <tr>
+                    <td>Quantity</td>
+                    <td><input type="number" value="1" id="itemQuantity"></td>
+                </tr>
+                <tr>
+                    <td>Unit Price</td>
+                    <td><input type="number" value="400000" id="itemPrice"></td>
+                </tr>
+                <tr>
+                    <td>SKU</td>
+                    <td><input value="ABC-123" id="itemSku"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="column">
+        <h2>Functionality</h2>
+        <input type="button" class="button3" id="setPrequal" value="Set Prequal Widget">
+        <input type="button" class="button1" id="showPrequal" value="Show Prequal Widget">
+        <input type="button" class="button2" id="launchPrequal" value="Launch Prequal Flow">
+    </div>
+    
+    <script type="text/javascript">
+      var launchPrequalButton = document.getElementById('launchPrequal'),
+        showPrequalButton = document.getElementById('showPrequal'),
+        setPrequalButton = document.getElementById('setPrequal')
+      ;
+
+      setPrequalButton.addEventListener('click', setPrequal, false);
+      showPrequalButton.addEventListener('click', showPrequal, false);
+      launchPrequalButton.addEventListener('click', launchPrequal, false);
+
+      function showPrequal() {
+        affirm.ui.prequal.show();
+      }
+
+      function launchPrequal() {
+        affirm.ui.prequal.launchPrequalFlow();
+      }
+
+      function setPrequal() {
+        // Grab form values
+        var merchantName = document.getElementById('merchantName').value,
+          mode = document.getElementById('widgetMode').value,
+          pageType = document.getElementById('pageType').value,
+          itemName = document.getElementById('itemName').value,
+          itemUrl = document.getElementById('itemUrl').value,
+          itemQuantity = document.getElementById('itemQuantity').value,
+          itemPrice = document.getElementById('itemPrice').value,
+          itemSku = document.getElementById('itemSku').value
+        ;
+
+        affirm.prequal.set({
+          merchant_name: merchantName,
+          mode: mode,
+          page_type: pageType,
+          item: [{
+            display_name: itemName,
+            item_url: itemUrl,
+            sku: itemSku,
+            unit_price: itemPrice,
+            qty: itemQuantity,
+          }],
+        });
+        setPrequalButton.classList.toggle('working');
+        setPrequalButton.value = 'Prequal Object Set!';
+        setTimeout(function () {
+          setPrequalButton.value = 'Set Prequal Object';
+          setPrequalButton.classList.toggle('working');
+        }, 1500);
+      }
+
+      var IE = function () {
+        var ua = window.navigator.userAgent;
+        return (ua.indexOf('MSIE ') > 0 || ua.indexOf('Trident/') > 0);
+      };
+      if (IE()) {
+        launchPrequalButton.style.visibility('hidden');
+      }
+    </script>
+    <script src="/static/testing_tools/js/render.js"></script>
+</body>
+</html>

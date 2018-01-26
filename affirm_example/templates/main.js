@@ -33,6 +33,7 @@ var pages = [
   'br',
   'promos',
   'promos-legacy',
+  'prequal-promos',
   'br',
   'prequal'];
 
