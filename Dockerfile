@@ -1,4 +1,4 @@
-FROM ubuntu:12.04
+FROM ubuntu:16.04
 MAINTAINER Blaine Chatman <blaine.chatman@affirm.com>
 
 # install deb/pip packages
@@ -13,6 +13,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
                        python-virtualenv && \
     rm -rf /var/lib/apt/lists/* /tmp/* && \
     apt-get clean
+RUN pip install -U pip    
 RUN pip install -U flask-script gevent gunicorn
 
 # copy code to /affirm
