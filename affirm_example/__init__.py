@@ -132,6 +132,25 @@ def shopping_item_page():
                 "zipcode": "94111"
             }
         },
+
+        "billing": {
+            "name": {
+                "first": None,
+                "last": None,
+            },
+            "address": {
+                "line1": "325 Pacific Ave.",
+                "line2": None,
+                "city": "San Francisco",
+                "state": "CA",
+                "zipcode": "94111"
+            }
+        },
+        "metadata": {
+            "shipping_type": "Standard Shipping",
+            "__affirm_tracking_uuid": None,
+        },
+        "order_id": None,
         "total": 10000
     }
 
