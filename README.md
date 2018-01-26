@@ -42,6 +42,3 @@ Quickstart guide:
 
 6. Point your browser to ```http://127.0.0.1:8080```
 (or whatever you set host/port to in step 5)
-
-## To deploy this repo to a docker
-https://jenkins-m.affirm-dev.com/view/Salt/job/salt.docker.affirm-example-python/build

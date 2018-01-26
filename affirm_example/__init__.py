@@ -143,7 +143,7 @@ def shopping_item_page():
                 "line2": None,
                 "city": "San Francisco",
                 "state": "CA",
-                "zipcode": "94111"  
+                "zipcode": "94111"
             }
         },
         "metadata": {
