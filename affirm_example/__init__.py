@@ -39,8 +39,11 @@ def create_charge(checkout_token):
                                app.config["AFFIRM"]["SECRET_API_KEY"]),
                          **_get_extra_request_args()).json()
 
+def merchant_capture_charge(charge_id, amount=None):
+    return _merchant_capture_charge(charge_id, amount)
 
-def capture_charge(charge_id, amount=None):
+
+def _merchant_capture_charge(charge_id, amount=None):
     capture_charge_url = "{0}/charges/{1}/capture".format(app.config["AFFIRM"]["API_URL"], charge_id)
     print capture_charge_url
     return requests.post(capture_charge_url,
@@ -51,6 +54,15 @@ def capture_charge(charge_id, amount=None):
                          auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
                                app.config["AFFIRM"]["SECRET_API_KEY"]),
                          **_get_extra_request_args()).json()
+
+
+def merchant_capture_and_originate_charge(charge_id):
+    merchant_capture_result = _merchant_capture_charge(charge_id)
+    originate_charge_url = "{0}/originate/{1}".format(app.config["AFFIRM"]["FUNCTIONAL_TESTS_URL"], charge_id)
+    print originate_charge_url
+    requests.post(originate_charge_url)
+     # returning the merchant capture result in case there are downstream users expecting this data
+    return merchant_capture_result
 
 
 def void_charge(charge_id):
@@ -216,7 +228,7 @@ def user_confirm_page():
     kwargs = {}
     if app.config['USE_HTTPS']:
         kwargs.update({'_external': True, '_scheme': 'https'})
-    for charge_action in {"read", "capture", "void", "refund"}:
+    for charge_action in {"read", "capture", "void", "refund", "merchant_capture"}:
         template_data["{0}_url".format(charge_action)] = url_for(".admin_do",
                                                                  charge_action=charge_action,
                                                                  charge_id=charge["id"],
@@ -266,10 +278,11 @@ def affirm_checkout_amendment():
 @app.route("/admin/do/<charge_action>/<charge_id>")
 def admin_do(charge_action, charge_id):
     action_dispatch = {
-        "capture": capture_charge,
         "read": read_charge,
+        "capture": merchant_capture_and_originate_charge,
         "refund": refund_charge,
         "void": void_charge,
+        "merchant_capture": merchant_capture_charge
     }
     if charge_action not in action_dispatch:
         return abort(404)

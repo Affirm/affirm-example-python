@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{}<!DOCTYPE html>
 <html>
 <head>
     <title>User Confirm</title>
@@ -18,7 +18,7 @@ Affirm charge ID: <b>{{ charge_id }}</b>
         </tr>
         <tr>
             <td>capture</td>
-            <td><a href="{{ capture_url }}" target="_blank">/api/v2/charges/{{ charge_id }}/capture</a></td>
+            <td><a href="{{ capture_url }}" target="_blank">/functional_tests/originate/{{ charge_id }}</a></td>
         </tr>
         <tr>
             <td>refund</td>
@@ -27,6 +27,10 @@ Affirm charge ID: <b>{{ charge_id }}</b>
         <tr>
             <td>void</td>
             <td><a href="{{ void_url }}" target="_blank">/api/v2/charges/{{ charge_id }}/void</a></td>
+        </tr>
+        <tr>
+            <td>merchant capture</td>
+            <td><a href="{{ merchant_capture_url }}" target="_blank">/api/v2/charges/{{ charge_id }}/capture</a></td>
         </tr>
     </table>
 </div>
