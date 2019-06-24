@@ -5,16 +5,16 @@ from flask import abort
 from flask import url_for
 from uuid import uuid4
 
-
 app = flask.Flask(__name__)
 
 
-## Affirm Charges REST API
+# Affirm Charges REST API
 def _get_extra_request_args():
     if "extra_request_args" in app.config:
         return app.config["extra_request_args"]
     else:
         return {}
+
 
 def get_checkout_from_token(checkout_token):
     read_checkout_url = "{0}/checkout/{1}".format(app.config["AFFIRM"]["API_URL"], checkout_token)
@@ -23,7 +23,7 @@ def get_checkout_from_token(checkout_token):
                         headers={"Content-Type": "application/json"},
                         auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
                               app.config["AFFIRM"]["SECRET_API_KEY"]),
-                              **_get_extra_request_args()).json()
+                        **_get_extra_request_args()).json()
 
 
 def create_charge(checkout_token):
@@ -39,6 +39,7 @@ def create_charge(checkout_token):
                                app.config["AFFIRM"]["SECRET_API_KEY"]),
                          **_get_extra_request_args()).json()
 
+
 def merchant_capture_charge(charge_id, amount=None):
     return _merchant_capture_charge(charge_id, amount)
 
@@ -46,23 +47,31 @@ def merchant_capture_charge(charge_id, amount=None):
 def _merchant_capture_charge(charge_id, amount=None):
     capture_charge_url = "{0}/charges/{1}/capture".format(app.config["AFFIRM"]["API_URL"], charge_id)
     print capture_charge_url
-    return requests.post(capture_charge_url,
-                         data=json.dumps({
-                             "amount": amount,
-                         }),
-                         headers={"Content-Type": "application/json"},
-                         auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
-                               app.config["AFFIRM"]["SECRET_API_KEY"]),
-                         **_get_extra_request_args()).json()
+
+    return requests.post(
+        capture_charge_url,
+        data=json.dumps({
+            "amount": amount,
+        }),
+        headers={"Content-Type": "application/json"},
+        auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
+              app.config["AFFIRM"]["SECRET_API_KEY"]),
+        **_get_extra_request_args()).json()
 
 
 def merchant_capture_and_originate_charge(charge_id):
     merchant_capture_result = _merchant_capture_charge(charge_id)
+    originate_charge(charge_id)
+    return merchant_capture_result
+
+
+def originate_charge(charge_id):
     originate_charge_url = "{0}/originate/{1}".format(app.config["AFFIRM"]["FUNCTIONAL_TESTS_URL"], charge_id)
+
     print originate_charge_url
     requests.post(originate_charge_url)
-     # returning the merchant capture result in case there are downstream users expecting this data
-    return merchant_capture_result
+
+    return read_charge(charge_id)
 
 
 def void_charge(charge_id):
@@ -166,21 +175,19 @@ def shopping_item_page():
         "total": 10000
     }
 
-
     # This data is used to initialize the Affirm Prequal
     affirm_prequal_data = {
         "page_type": "product",
         "items": [
-             {
-                 "sku": "ACME-SLR-NG-01",
-                 "item_url": url_for(".shopping_item_page", **kwargs),
-                 "display_name": "Acme SLR-NG",
-                 "unit_price": 10000,
-                 "qty": 1
-             }
-         ],
+            {
+                "sku": "ACME-SLR-NG-01",
+                "item_url": url_for(".shopping_item_page", **kwargs),
+                "display_name": "Acme SLR-NG",
+                "unit_price": 10000,
+                "qty": 1
+            }
+        ],
     }
-
 
     if app.config["INJECT_CHECKOUT_AMENDMENT_URL"]:
         affirm_checkout_data["merchant"]["checkout_amendment_url"] = url_for(
@@ -191,7 +198,7 @@ def shopping_item_page():
         kwargs.update({'_external': True, '_scheme': 'https'})
     template_data = dict(
         affirm_checkout=affirm_checkout_data,
-        affirm_prequal = affirm_prequal_data,
+        affirm_prequal=affirm_prequal_data,
         item_image_url=url_for(".static", filename="item.png", **kwargs),
         display_name="Acme SLR-NG",
         unit_price_dollars="100.00",
@@ -212,14 +219,22 @@ def user_confirm_page():
     else:
         checkout_token = flask.request.form["checkout_token"]
 
-    checkout = get_checkout_from_token(checkout_token)
     import pprint
-    pprint.pprint(checkout)
+
+    for i in range(3):
+        try:
+            checkout = get_checkout_from_token(checkout_token)
+            pprint.pprint(checkout)
+        except Exception:
+            # retry for timeouts
+            continue
+        else:
+            break
+    else:
+        print("Error: unable to fetch checkout")
 
     # Capture the charge with Affirm
     charge = create_charge(checkout_token)
-
-    import pprint
     pprint.pprint(charge)
 
     template_data = {
@@ -228,7 +243,7 @@ def user_confirm_page():
     kwargs = {}
     if app.config['USE_HTTPS']:
         kwargs.update({'_external': True, '_scheme': 'https'})
-    for charge_action in {"read", "capture", "void", "refund", "merchant_capture"}:
+    for charge_action in {"read", "capture", "void", "refund", "merchant_capture", "originate"}:
         template_data["{0}_url".format(charge_action)] = url_for(".admin_do",
                                                                  charge_action=charge_action,
                                                                  charge_id=charge["id"],
@@ -282,7 +297,8 @@ def admin_do(charge_action, charge_id):
         "capture": merchant_capture_and_originate_charge,
         "refund": refund_charge,
         "void": void_charge,
-        "merchant_capture": merchant_capture_charge
+        "merchant_capture": merchant_capture_charge,
+        "originate": originate_charge,
     }
     if charge_action not in action_dispatch:
         return abort(404)
@@ -296,7 +312,6 @@ def main_js():
 
 
 def create_app(settings):
-
     @app.route("/favicon.ico")
     def favicon():
         return app.send_static_file("favicon.ico")
