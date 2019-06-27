@@ -3,51 +3,75 @@
 <!--[if IE 7]>   <html class="no-js lt-ie9 lt-ie8"><![endif]-->
 <!--[if IE 8]>   <html class="no-js lt-ie9"><![endif]-->
 <!--[if gt IE 8]><html class="no-js"><![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
 
-        <link rel="stylesheet" href="static/css/normalize.css">
-        <link rel="stylesheet" href="static/css/main.css">
+    <link rel="stylesheet" href="static/css/normalize.css">
+    <link rel="stylesheet" href="static/css/main.css">
 
-        <!--[if lt IE 9]>
+    <!--[if lt IE 9]>
             <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
             <script>window.html5 || document.write('<script src="static/js/vendor/html5shiv.js"><\/script>')</script>
         <![endif]-->
-    </head>
-    <script>
-      var _affirm_config = {
-        public_api_key:        "{{config['AFFIRM']['PUBLIC_API_KEY']}}",
-        script:                "{{ config['AFFIRM']['AFFIRM_JS_URL'] }}"
-      };
-      (function(l,g,m,e,a,f,b){var d,c=l[m]||{},h=document.createElement(f),n=document.getElementsByTagName(f)[0],k=function(a,b,c){return function(){a[b]._.push([c,arguments])}};c[e]=k(c,e,"set");d=c[e];c[a]={};c[a]._=[];d._=[];c[a][b]=k(c,a,b);a=0;for(b="set add save post open empty reset on off trigger ready".split(" ");a<b.length;a++)d[b[a]]=k(c,e,b[a]);a=0;for(b=["get","token","url","items"];a<b.length;a++)d[b[a]]=function(){};h.async=!0;h.src=g[f];n.parentNode.insertBefore(h,n);delete g[f];d(g);l[m]=c})(window,_affirm_config,"affirm","checkout","ui","script","ready");
-    </script>
-    <style type="text/css" media="screen">
-        body {
-            margin: 1em;
-        }
+</head>
+<script>
+    var _affirm_config = {
+        public_api_key: "{{config['AFFIRM']['PUBLIC_API_KEY']}}",
+        script: "{{ config['AFFIRM']['AFFIRM_JS_URL'] }}"
+    };
+    (function (l, g, m, e, a, f, b) {
+        var d, c = l[m] || {}, h = document.createElement(f), n = document.getElementsByTagName(f)[0],
+            k = function (a, b, c) {
+                return function () {
+                    a[b]._.push([c, arguments])
+                }
+            };
+        c[e] = k(c, e, "set");
+        d = c[e];
+        c[a] = {};
+        c[a]._ = [];
+        d._ = [];
+        c[a][b] = k(c, a, b);
+        a = 0;
+        for (b = "set add save post open empty reset on off trigger ready".split(" "); a < b.length; a++) d[b[a]] = k(c, e, b[a]);
+        a = 0;
+        for (b = ["get", "token", "url", "items"]; a < b.length; a++) d[b[a]] = function () {
+        };
+        h.async = !0;
+        h.src = g[f];
+        n.parentNode.insertBefore(h, n);
+        delete g[f];
+        d(g);
+        l[m] = c
+    })(window, _affirm_config, "affirm", "checkout", "ui", "script", "ready");
+</script>
+<style type="text/css" media="screen">
+    body {
+        margin: 1em;
+    }
 
-        .container {
-            width: 372px;
-            text-align: center;
-            margin: 0 auto;
-            margin-bottom: 1em;
-            margin-top: 2em;
-        }
+    .container {
+        width: 372px;
+        text-align: center;
+        margin: 0 auto;
+        margin-bottom: 1em;
+        margin-top: 2em;
+    }
 
-        .container .label {
-            margin-top: .5em;
-        }
+    .container .label {
+        margin-top: .5em;
+    }
 
-        .price {
-            font-weight: bold;
-        }
-    </style>
-    <body>
-        <!--[if lt IE 7]>
+    .price {
+        font-weight: bold;
+    }
+</style>
+<body>
+<!--[if lt IE 7]>
         <p class="chromeframe">
             You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your
             browser</a> or
@@ -55,51 +79,54 @@
             experience.
         </p>
         <![endif]-->
-        <!-- Sample item image -->
-        <div class="container">
-            <!-- Checkout Submit Button -->
-            <div class="col-xs-6 sidebar">
-                <h3>Complete your checkout</h3>
-                <form>
-                    <input type="button" class="btn btn-primary" value="Continue" id="submit-form"
-                           onclick="return openCheckout(this);"/>
-                </form>
-            </div>
-            <div class="label">
-                {{display_name}} <br>
-                $<input id="item-price" class="price" value="{{ unit_price_dollars }}">
-            </div>
-            <br>
-            <!-- Payment Type Selector -->
-            <div class="form-group col-xs-12">
-                <label for="affirm_checkout_option">
-                    <input type="radio" name="payment_type" id="affirm_checkout_option" value="affirm" checked/>
-                    <img src="https://cdn1.affirm.com/images/badges/affirm-card_78x54.png" width="39" height="27"/>
-                    Pay with Affirm Split Pay
-                </label>
-                <div class="affirm-promo" data-promo-size="296x196"
-                     data-promo-content="https://www.affirm.com/images/png/press-green_mark.png"></div>
-            </div>
-            <img src="{{item_image_url}}" width="100"/>
+<!-- Sample item image -->
+<div class="container">
+    <!-- Checkout Submit Button -->
+    <div class="col-xs-6 sidebar">
+        <h3>Complete your checkout</h3>
+        <form>
+            <input type="button" class="btn btn-primary" value="Continue" id="submit-form"
+                   onclick="return openCheckout(this);"/>
+        </form>
+    </div>
+    <div class="label">
+        {{ display_name }} <br>
+        $<input id="item-price" class="price" value="{{ unit_price_dollars }}">
+    </div>
+    <br>
+    <!-- Payment Type Selector -->
+    <div class="form-group col-xs-12">
+        <label for="affirm_checkout_option">
+            <input type="radio" name="payment_type" id="affirm_checkout_option" value="affirm" checked/>
+            <img src="https://cdn-assets.affirm.com/images/badges/affirm-logo_78x54.png" width="39" height="27"/>
+            Pay with Affirm Split Pay
+        </label>
+        <div class="affirm-promo" data-promo-size="300x215"
+             data-promo-content="https://cdn-assets.affirm.com/images/blue_hollow_circle-transparent_bg.png">
         </div>
-        <script type="application/javascript">
-          // Initialize prequal data & show prequal banner
-          let prequalData = {{ affirm_prequal | tojson | safe }};
-          affirm.ui.ready(function () {
-            affirm.prequal.set(prequalData);
-            affirm.ui.prequal.show();
-          });
+    </div>
+    <br />
+    <img src="{{ item_image_url }}" width="100"/>
+</div>
+<script type="application/javascript">
+    // Initialize prequal data & show prequal banner
+    let prequalData = {{ affirm_prequal | tojson | safe }};
+    affirm.ui.ready(function () {
+        affirm.prequal.set(prequalData);
+        affirm.ui.prequal.show();
+    });
 
-          var checkoutData = {{ affirm_checkout | tojson | safe }};
-          function openCheckout(input) {
-            var priceInput = document.getElementById('item-price');
-            var price = Math.round(Number(priceInput.value) * 100);
-            checkoutData.total = checkoutData.items[0].unit_price = price;
+    var checkoutData = {{ affirm_checkout | tojson | safe }};
 
-            affirm.checkout(checkoutData);
-            affirm.checkout.open();
-            return false; // return false so page doesn't reload
-          }
-        </script>
-    </body>
+    function openCheckout(input) {
+        var priceInput = document.getElementById('item-price');
+        var price = Math.round(Number(priceInput.value) * 100);
+        checkoutData.total = checkoutData.items[0].unit_price = price;
+
+        affirm.checkout(checkoutData);
+        affirm.checkout.open();
+        return false; // return false so page doesn't reload
+    }
+</script>
+</body>
 </html>
