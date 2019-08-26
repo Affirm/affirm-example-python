@@ -116,7 +116,7 @@ def shopping_item_page():
     # this gets turned into JSON and used to initialize the affirm checkout
     affirm_checkout_data = {
 
-        "currency": "USD",
+        "currency": "CAD",
 
         # checkout_id can be inserted, this can be used for your own internal tracking
         "checkout_id": str(uuid4()),
