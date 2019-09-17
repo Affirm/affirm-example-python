@@ -113,10 +113,11 @@ def shopping_item_page():
     kwargs = {'_external': True}
     if app.config['USE_HTTPS']:
         kwargs.update({'_scheme': 'https'})
+
+    default_currency = app.config.get('DEFAULT_CURRENCY', 'USD')
+
     # this gets turned into JSON and used to initialize the affirm checkout
     affirm_checkout_data = {
-
-        "currency": "USD",
 
         # checkout_id can be inserted, this can be used for your own internal tracking
         "checkout_id": str(uuid4()),
@@ -199,6 +200,7 @@ def shopping_item_page():
     template_data = dict(
         affirm_checkout=affirm_checkout_data,
         affirm_prequal=affirm_prequal_data,
+        default_currency=default_currency,
         item_image_url=url_for(".static", filename="item.png", **kwargs),
         display_name="Acme SLR-NG",
         unit_price_dollars="100.00",

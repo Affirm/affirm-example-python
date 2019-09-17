@@ -73,7 +73,11 @@
   </div>
   <div class="label">
     {{ display_name }} <br>
-    $<input id="item-price" class="price" value="{{ unit_price_dollars }}">
+    <select id="currency">
+      <option value="USD"{% if default_currency == "USD" %} selected{% endif %}>USD</option>
+      <option value="CAD"{% if default_currency == "CAD" %} selected{% endif %}>CAD</option>
+    </select>
+    <input id="item-price" class="price" value="{{ unit_price_dollars }}">
   </div>
   <br>
   <!-- Payment Type Selector -->
@@ -97,6 +101,9 @@
     var priceInput = document.getElementById('item-price');
     var price = Math.round(Number(priceInput.value) * 100);
     checkoutData.total = checkoutData.items[0].unit_price = price;
+
+    var currency = document.getElementById('currency').value;
+    checkoutData.currency = currency;
 
     affirm.checkout(checkoutData);
     affirm.checkout.open();
