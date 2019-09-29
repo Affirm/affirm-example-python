@@ -96,6 +96,7 @@
 </div>
 <script type="application/javascript">
   var checkoutData = {{ affirm_checkout | tojson | safe }};
+  var caAddress = {{ ca_address | tojson | safe }};
 
   function openCheckout(input) {
     var priceInput = document.getElementById('item-price');
@@ -104,6 +105,11 @@
 
     var currency = document.getElementById('currency').value;
     checkoutData.currency = currency;
+
+    if (currency === 'CAD') {
+      checkoutData.billing.address = caAddress;
+      checkoutData.shipping.address = caAddress;
+    }
 
     affirm.checkout(checkoutData);
     affirm.checkout.open();

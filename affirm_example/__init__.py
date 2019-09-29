@@ -190,6 +190,15 @@ def shopping_item_page():
         ],
     }
 
+    ca_address = {
+        'street1': '745 Thurlow Street',
+        'street2': 'Suite 2400',
+        'city': 'Vancouver',
+        'region1_code': 'BC',
+        'postal_code': 'V6E 0C5',
+        'country_code': 'CA',
+    }
+
     if app.config["INJECT_CHECKOUT_AMENDMENT_URL"]:
         affirm_checkout_data["merchant"]["checkout_amendment_url"] = url_for(
             ".affirm_checkout_amendment", **kwargs)
@@ -204,6 +213,7 @@ def shopping_item_page():
         item_image_url=url_for(".static", filename="item.png", **kwargs),
         display_name="Acme SLR-NG",
         unit_price_dollars="100.00",
+        ca_address=ca_address,
     )
 
     return flask.render_template("index.html", **template_data)
