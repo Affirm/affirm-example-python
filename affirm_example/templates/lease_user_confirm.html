@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lease User Confirm</title>
+</head>
+<body style="font-family: monospace">
+
+Affirm transaction ID: <b>{{ transaction_id }}</b>
+
+<br>
+<br>
+
+<div>
+    <table>
+        <tr>
+            <td>read</td>
+            <td><a href="{{ read_url }}" id="read" target="_blank">/api/v1/transactions/{{ transaction_id }}</a></td>
+        </tr>
+        <tr>
+            <td>capture</td>
+            <td><a href="{{ capture_url }}" id="capture" target="_blank">/api/v1/transactions/{{ transaction_id }}/capture</a></td>
+        </tr>
+        <tr>
+            <td>refund</td>
+            <td><a href="{{ refund_url }}" id="refund" target="_blank">/api/v1/transactions/{{ transaction_id }}/refund</a></td>
+        </tr>
+        <tr>
+            <td>void</td>
+            <td><a href="{{ void_url }}" id="void" target="_blank">/api/v1/transactions/{{ transaction_id }}/void</a></td>
+        </tr>
+    </table>
+    <br/>
+</div>
+
+</body>
+</html>

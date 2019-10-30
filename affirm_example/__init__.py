@@ -104,6 +104,86 @@ def read_charge(charge_id):
                               app.config["AFFIRM"]["SECRET_API_KEY"]),
                         **_get_extra_request_args()).json()
 
+def display_charge_actions(template_data):
+    kwargs = {}
+    if app.config['USE_HTTPS']:
+        kwargs.update({'_external': True, '_scheme': 'https'})
+    for charge_action in {"read", "capture", "void", "refund", "merchant_capture", "originate"}:
+        template_data["{0}_url".format(charge_action)] = url_for(".admin_do",
+                                                                 charge_action=charge_action,
+                                                                 charge_id=template_data["charge_id"],
+                                                                 **kwargs)
+
+    return flask.render_template("user_confirm.html", **template_data)
+
+# Affirm Transactions REST API
+def create_transaction(checkout_token):
+    create_transaction_url = "{0}/transactions".format(app.config["AFFIRM"]["TRANSACTIONS_API_URL"])
+    print create_transaction_url
+    request_args = {}
+    return requests.post(create_transaction_url,
+                         data=json.dumps({
+                             "transaction_id": checkout_token
+                         }),
+                         headers={"Content-Type": "application/json"},
+                         auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
+                               app.config["AFFIRM"]["SECRET_API_KEY"]),
+                         **_get_extra_request_args()).json()
+
+def read_transaction(transaction_id):
+    get_transaction_url = "{0}/transactions/{1}".format(app.config["AFFIRM"]["TRANSACTIONS_API_URL"], transaction_id)
+    print get_transaction_url
+    return requests.get(get_transaction_url,
+                        auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
+                              app.config["AFFIRM"]["SECRET_API_KEY"]),
+                        **_get_extra_request_args()).json()
+
+def void_transaction(transaction_id):
+    void_transaction_url = "{0}/transactions/{1}/void".format(app.config["AFFIRM"]["TRANSACTIONS_API_URL"], transaction_id)
+    print void_transaction_url
+    return requests.post(void_transaction_url,
+                         auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
+                               app.config["AFFIRM"]["SECRET_API_KEY"]),
+                         **_get_extra_request_args()).json()
+
+
+def refund_transaction(transaction_id, amount=10):
+    refund_transaction_url = "{0}/transactions/{1}/refund".format(app.config["AFFIRM"]["TRANSACTIONS_API_URL"], transaction_id)
+    print refund_transaction_url
+    return requests.post(refund_transaction_url,
+                         data=json.dumps({
+                             "amount": amount
+                         }),
+                         headers={"Content-Type": "application/json"},
+                         auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
+                               app.config["AFFIRM"]["SECRET_API_KEY"]),
+                         **_get_extra_request_args()).json()
+
+def capture_transaction(transaction_id, amount=None):
+    capture_transaction_url = "{0}/transactions/{1}/capture".format(app.config["AFFIRM"]["TRANSACTIONS_API_URL"], transaction_id)
+    print capture_transaction_url
+
+    return requests.post(
+        capture_transaction_url,
+        data=json.dumps({
+            "amount": amount,
+        }),
+        headers={"Content-Type": "application/json"},
+        auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
+              app.config["AFFIRM"]["SECRET_API_KEY"]),
+        **_get_extra_request_args()).json()
+
+def display_transaction_actions(template_data):
+    kwargs = {}
+    if app.config['USE_HTTPS']:
+        kwargs.update({'_external': True, '_scheme': 'https'})
+    for transaction_action in {"read", "update", "capture", "refund", "void"}:
+        template_data["{0}_url".format(transaction_action)] = url_for(".transaction_admin_do",
+                                                                 transaction_action=transaction_action,
+                                                                 transaction_id=template_data["transaction_id"],
+                                                                 **kwargs)
+
+    return flask.render_template("lease_user_confirm.html", **template_data)
 
 @app.route("/")
 def shopping_item_page():
@@ -245,23 +325,17 @@ def user_confirm_page():
     else:
         print("Error: unable to fetch checkout")
 
-    # Capture the charge with Affirm
-    charge = create_charge(checkout_token)
-    pprint.pprint(charge)
+    if checkout_token.startswith('LS-'):
+        transaction = create_transaction(checkout_token)
+        pprint.pprint(transaction)
 
-    template_data = {
-        "charge_id": charge["id"],
-    }
-    kwargs = {}
-    if app.config['USE_HTTPS']:
-        kwargs.update({'_external': True, '_scheme': 'https'})
-    for charge_action in {"read", "capture", "void", "refund", "merchant_capture", "originate"}:
-        template_data["{0}_url".format(charge_action)] = url_for(".admin_do",
-                                                                 charge_action=charge_action,
-                                                                 charge_id=charge["id"],
-                                                                 **kwargs)
+        return display_transaction_actions({"transaction_id": transaction["id"]})
+    else:
+        # Capture the charge with Affirm
+        charge = create_charge(checkout_token)
+        pprint.pprint(charge)
 
-    return flask.render_template("user_confirm.html", **template_data)
+        return display_charge_actions({"charge_id": charge["id"]})
 
 
 @app.route("/checkout_amendment", methods=["POST"])
@@ -315,6 +389,19 @@ def admin_do(charge_action, charge_id):
     if charge_action not in action_dispatch:
         return abort(404)
     response = action_dispatch[charge_action](charge_id)
+    return "<pre>%s</pre>" % json.dumps(response, indent=2, sort_keys=True)
+
+@app.route("/admin/do/transaction/<transaction_action>/<transaction_id>")
+def transaction_admin_do(transaction_action, transaction_id):
+    action_dispatch = {
+        "read": read_transaction,
+        "capture": capture_transaction,
+        "refund": refund_transaction,
+        "void": void_transaction,
+    }
+    if transaction_action not in action_dispatch:
+        return abort(404)
+    response = action_dispatch[transaction_action](transaction_id)
     return "<pre>%s</pre>" % json.dumps(response, indent=2, sort_keys=True)
 
 
