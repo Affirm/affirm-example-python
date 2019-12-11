@@ -241,7 +241,7 @@ def shopping_item_page():
                 "last": None,
             },
             "address": {
-                "line1": "325 Pacific Ave.",
+                "line1": "325 Pacific\n Ave.",
                 "line2": None,
                 "city": "San Francisco",
                 "state": "CA",
