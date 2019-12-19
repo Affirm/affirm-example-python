@@ -2,7 +2,8 @@
 var _affirm_config = {
   public_api_key:  "{{config['AFFIRM']['PUBLIC_API_KEY']}}",
   script: "{{ config['AFFIRM']['AFFIRM_JS_URL'] }}",
-  api_url: "{{ config['AFFIRM']['API_URL'] }}"
+  api_url: "{{ config['AFFIRM']['API_URL'] }}",
+  transactions_api_url: "{{ config['AFFIRM']['TRANSACTIONS_API_URL'] }}"
 };
 var page_name = document.title;
 var current_page = document.location.origin + document.location.pathname;
@@ -204,6 +205,7 @@ switch (env) {
     _affirm_config = {
       script: 'https://cdn1.affirm.com/js/v2/affirm.js',
       api_url: 'https://affirm.com/api/v2',
+      transactions_api_url: 'https://affirm.com/api/v1',
       public_api_key: 'xxxxxxxxx',
     };
     break;
@@ -211,6 +213,7 @@ switch (env) {
     _affirm_config = {
       script: 'https://cdn1-sandbox.affirm.com/js/v2/affirm.js',
       api_url: 'https://sandbox.affirm.com/api/v2',
+      transactions_api_url: 'https://sandbox.affirm.com/api/v1',
       public_api_key: 'xxxxxxxxxx',
     };
     break;
@@ -218,6 +221,7 @@ switch (env) {
     _affirm_config = {
       script: 'https://special-1.affirm-dev.com/js/v2/affirm.js',
       api_url: 'https://special-1.affirm-dev.com/api/v2',
+      transactions_api_url: 'https://special-1.affirm-dev.com/api/v1',
       public_api_key: 'QAZKCCUVPDTP7RE2',
     };
     break;
@@ -225,6 +229,7 @@ switch (env) {
     _affirm_config = {
       script: 'https://special-2.affirm-dev.com/js/v2/affirm.js',
       api_url: 'https://special-2.affirm-dev.com/api/v2',
+      transactions_api_url: 'https://special-2.affirm-dev.com/api/v1',
       public_api_key: 'QAZKCCUVPDTP7RE2',
     };
     break;
@@ -232,6 +237,7 @@ switch (env) {
     _affirm_config = {
       script: 'https://int-1-1.affirm-stage.com/js/v2/affirm.js',
       api_url: 'https://int-1-1.affirm-stage.com/api/v2',
+      transactions_api_url: 'https://int-1-1.affirm-stage.com/api/v1',
       public_api_key: 'FND06LW8187URGAA',
     };
     break;
@@ -239,6 +245,7 @@ switch (env) {
     _affirm_config = {
       script: 'https://special-16.affirm-dev.com/js/v2/affirm.js',
       api_url: 'https://special-16.affirm-dev.com/api/v2',
+      transactions_api_url: 'https://special-16.affirm-dev.com/api/v1',
       public_api_key: '8Q9L5CUK3D9NVFBX',
     };
     break;
@@ -246,6 +253,7 @@ switch (env) {
     _affirm_config = {
       script: 'https://int-1-2.affirm-stage.com/js/v2/affirm.js',
       api_url: 'https://int-1-2.affirm-stage.com/api/v2',
+      transactions_api_url: 'https://int-1-2.affirm-stage.com/api/v1',
       public_api_key: 'FND06LW8187URGAA',
     };
     break;
@@ -253,6 +261,7 @@ switch (env) {
     _affirm_config = {
       script: 'https://int-1-3.affirm-stage.com/js/v2/affirm.js',
       api_url: 'https://int-1-3.affirm-stage.com/api/v2',
+      transactions_api_url: 'https://int-1-3.affirm-stage.com/api/v1',
       public_api_key: 'FND06LW8187URGAA',
     };
     break;
@@ -260,6 +269,7 @@ switch (env) {
     _affirm_config = {
       script: 'https://int-1-4.affirm-stage.com/js/v2/affirm.js',
       api_url: 'https://int-1-4.affirm-stage.com/api/v2',
+      transactions_api_url: 'https://int-1-4.affirm-stage.com/api/v1',
       public_api_key: 'FND06LW8187URGAA',
     };
     break;
@@ -267,6 +277,7 @@ switch (env) {
     _affirm_config = {
       script: 'https://int-2-4.affirm-stage.com/js/v2/affirm.js',
       api_url: 'https://int-2-4.affirm-stage.com/api/v2',
+      transactions_api_url: 'https://int-2-4.affirm-stage.com/api/v1',
       public_api_key: 'W3HRPZ1233KHHKPI',
     };
     break;
@@ -274,6 +285,7 @@ switch (env) {
     _affirm_config = {
       script: 'https://int-2-11.affirm-stage.com/js/v2/affirm.js',
       api_url: 'https://int-2-11.affirm-stage.com/api/v2',
+      transactions_api_url: 'https://int-2-11.affirm-stage.com/api/v1',
       public_api_key: '15C52NQVJ7J4HV63',
     };
     break;
@@ -281,6 +293,7 @@ switch (env) {
     _affirm_config = {
       script: 'https://cdn1-sandbox.affirm-stage.com/js/v2/affirm.js',
       api_url: 'https://sandbox.affirm-stage.com/api/v2',
+      transactions_api_url: 'https://sandbox.affirm-stage.com/api/v1',
       public_api_key: 'C2S4ECO7NTD9T5GO',
     };
     break;
@@ -288,6 +301,7 @@ switch (env) {
     _affirm_config = {
       script: 'http://localhost:3000/v2/affirm.js',
       api_url: 'http://localhost:3000',
+      transactions_api_url: 'http://localhost:3000',
       public_api_key: 'xxxxxxxxxxxxxxxx',
     };
     break;
