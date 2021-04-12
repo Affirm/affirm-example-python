@@ -13,7 +13,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
                        python-virtualenv && \
     rm -rf /var/lib/apt/lists/* /tmp/* && \
     apt-get clean
-RUN pip install -U pip
+RUN pip install -U pip==19.2.3
 RUN pip install -U flask-script gevent gunicorn
 
 # copy code to /affirm
