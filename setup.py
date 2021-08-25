@@ -29,7 +29,7 @@ setup(
     long_description=open(os.path.join(os.path.dirname(__file__), 'README.md')).read(),
     install_requires=[
         "PyYAML",
-        "Flask >=0.10",
+        "Flask >=0.10,<1.2.0",
         "Flask-Script >= 0.6.6",
         "requests >= 1.2.0"
     ],
