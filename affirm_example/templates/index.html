@@ -79,8 +79,9 @@
     <br><br>
     Country:
     <select id="country" onchange="updateCountry()">
-      <option value="USA"{% if default_currency == "USD" %} selected{% endif %}>USA</option>
-      <option value="CAN"{% if default_currency == "CAD" %} selected{% endif %}>CAN</option>
+      <option value="USA"{% if default_currency == "USD" %} selected{% endif %}>USA 🇺🇸</option>
+      <option value="CAN"{% if default_currency == "CAD" %} selected{% endif %}>CAN 🇨🇦</option>
+      <option value="AUS"{% if default_currency == "AUD" %} selected{% endif %}>AUS 🇦🇺</option>
     </select>
     <br>
     Checkout amount:
@@ -105,18 +106,25 @@
 <script type="application/javascript">
   var checkoutData = {{ affirm_checkout | tojson | safe }};
   var caAddress = {{ ca_address | tojson | safe }};
+  var auAddress = {{ au_address | tojson | safe }};
 
   function openCheckout(input) {
     var priceInput = document.getElementById('item-price');
     var price = Math.round(Number(priceInput.value) * 100);
     checkoutData.total = checkoutData.items[0].unit_price = price;
 
-    var country = document.getElementById('country').value;
+    const country = document.getElementById('country').value;
+    var checkout_currency, checkout_address;
     if (country === 'CAN') {
-      checkoutData.currency = 'CAD';
-      checkoutData.billing.address = caAddress;
-      checkoutData.shipping.address = caAddress;
-    }
+      checkout_currency = 'CAD';
+      checkout_address = caAddress;
+    } else if (country === 'AUS') {
+      checkout_currency = 'AUD';
+      checkout_address = auAddress;
+    } // USA is default
+    checkoutData.currency = checkout_currency;
+    checkoutData.billing.address = checkout_address;
+    checkoutData.shipping.address = checkout_address;
 
     affirm.checkout(checkoutData);
     affirm.checkout.open();
@@ -129,6 +137,8 @@
       currency = 'USD';
     } else if (country === 'CAN') {
       currency = 'CAD';
+    } else if (country === 'AUS') {
+      currency = 'AUD';
     }
     var currency_label = document.getElementById('currency');
     currency_label.innerText = currency;

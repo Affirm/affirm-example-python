@@ -279,6 +279,15 @@ def shopping_item_page():
         'country_code': 'CA',
     }
 
+    au_address = {
+        "street1": "98 Shirley Street",
+        "street2": "Apt 1",
+        "city": "Pimpama",
+        "region1_code": "QLD",
+        "postal_code": "4209",
+        "country": "AUS"
+    }
+
     if app.config["INJECT_CHECKOUT_AMENDMENT_URL"]:
         affirm_checkout_data["merchant"]["checkout_amendment_url"] = url_for(
             ".affirm_checkout_amendment", **kwargs)
@@ -294,6 +303,7 @@ def shopping_item_page():
         display_name="Acme SLR-NG",
         unit_price_dollars="100.00",
         ca_address=ca_address,
+        au_address=au_address,
     )
 
     return flask.render_template("index.html", **template_data)
