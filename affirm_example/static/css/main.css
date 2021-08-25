@@ -55,6 +55,10 @@ textarea {
     padding: 0.2em 0;
 }
 
+.currency {
+    display:inline-block;
+}
+
 
 /* ==========================================================================
    Author's custom styles

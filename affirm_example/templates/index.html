@@ -75,12 +75,17 @@
     </form>
   </div>
   <div class="label">
-    {{ display_name }} <br>
-    <select id="currency">
-      <option value="USD"{% if default_currency == "USD" %} selected{% endif %}>USD</option>
-      <option value="CAD"{% if default_currency == "CAD" %} selected{% endif %}>CAD</option>
+    {{ display_name }}
+    <br><br>
+    Country:
+    <select id="country" onchange="updateCountry()">
+      <option value="USA"{% if default_currency == "USD" %} selected{% endif %}>USA</option>
+      <option value="CAN"{% if default_currency == "CAD" %} selected{% endif %}>CAN</option>
     </select>
+    <br>
+    Checkout amount:
     <input id="item-price" class="price" value="{{ unit_price_dollars }}">
+    <div id="currency" class="currency">{{ default_currency }}</div>
   </div>
   <br>
   <!-- Payment Type Selector -->
@@ -106,10 +111,9 @@
     var price = Math.round(Number(priceInput.value) * 100);
     checkoutData.total = checkoutData.items[0].unit_price = price;
 
-    var currency = document.getElementById('currency').value;
-    checkoutData.currency = currency;
-
-    if (currency === 'CAD') {
+    var country = document.getElementById('country').value;
+    if (country === 'CAN') {
+      checkoutData.currency = 'CAD';
       checkoutData.billing.address = caAddress;
       checkoutData.shipping.address = caAddress;
     }
@@ -117,6 +121,17 @@
     affirm.checkout(checkoutData);
     affirm.checkout.open();
     return false; // return false so page doesn't reload
+  }
+  function updateCountry() {
+    var country = document.getElementById('country').value;
+    var currency;
+    if (country === 'USA') {
+      currency = 'USD';
+    } else if (country === 'CAN') {
+      currency = 'CAD';
+    }
+    var currency_label = document.getElementById('currency');
+    currency_label.innerText = currency;
   }
 </script>
 </body>
