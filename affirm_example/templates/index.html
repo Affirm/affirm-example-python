@@ -114,17 +114,15 @@
     checkoutData.total = checkoutData.items[0].unit_price = price;
 
     const country = document.getElementById('country').value;
-    var checkout_currency, checkout_address;
     if (country === 'CAN') {
-      checkout_currency = 'CAD';
-      checkout_address = caAddress;
+      checkoutData.currency = 'CAD';
+      checkoutData.billing.address = caAddress;
+      checkoutData.shipping.address = caAddress;
     } else if (country === 'AUS') {
-      checkout_currency = 'AUD';
-      checkout_address = auAddress;
+      checkoutData.currency = 'AUD';
+      checkoutData.billing.address = auAddress;
+      checkoutData.shipping.address = auAddress;
     } // USA is default
-    checkoutData.currency = checkout_currency;
-    checkoutData.billing.address = checkout_address;
-    checkoutData.shipping.address = checkout_address;
 
     affirm.checkout(checkoutData);
     affirm.checkout.open();
