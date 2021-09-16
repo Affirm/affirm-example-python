@@ -280,11 +280,11 @@ def shopping_item_page():
     }
 
     au_address = {
-        "street1": "98 Shirley Street",
-        "street2": "Apt 1",
-        "city": "Pimpama",
-        "region1_code": "QLD",
-        "postal_code": "4209",
+        "street1": "40 Elizabeth St",
+        "street2": "",
+        "city": "BENTLEIGH EAST",
+        "region1_code": "VIC",
+        "postal_code": "3165",
         "country": "AUS"
     }
 
