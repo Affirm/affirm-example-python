@@ -14,7 +14,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
     rm -rf /var/lib/apt/lists/* /tmp/* && \
     apt-get clean
 RUN pip install -U pip==19.2.3 # needs to be pinned to this version for python 2
-RUN pip install -U setuptools flask-script gevent gunicorn # default version was not properly working
+RUN pip install -U setuptools flask-script gevent gunicorn pathlib # default version was not properly working
 
 # copy code to /affirm
 ADD . /affirm/affirm-example-python
