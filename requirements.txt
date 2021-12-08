@@ -1,0 +1,8 @@
+cython
+requests
+setuptools
+flask-script
+gevent
+gunicorn
+MarkupSafe==1.1.1
+PyYAML <= 5.4.1
