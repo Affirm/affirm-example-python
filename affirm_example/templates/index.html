@@ -87,7 +87,7 @@
       <option value="AUS"{% if default_currency == "AUD" %} selected{% endif %}>AUS 🇦🇺</option>
     </select>
     <br>
-    {% if config['AFFIRM']['MERCHANTS']|length > 0 %}
+    {% if 'MERCHANTS' in config['AFFIRM'] %}
       Merchants:
       <select id="merchant" onchange="updateMerchant()">
         {% for merchant in config['AFFIRM']['MERCHANTS'] %}
