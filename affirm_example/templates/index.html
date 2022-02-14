@@ -87,6 +87,15 @@
       <option value="AUS"{% if default_currency == "AUD" %} selected{% endif %}>AUS 🇦🇺</option>
     </select>
     <br>
+    {% if config['AFFIRM']['MERCHANTS']|length > 0 %}
+      Merchants:
+      <select id="merchant" onchange="updateMerchant()">
+        {% for merchant in config['AFFIRM']['MERCHANTS'] %}
+          <option value="{{ merchant.PUBLIC_API_KEY }}" {% if config['AFFIRM']['PUBLIC_API_KEY'] == merchant.PUBLIC_API_KEY %} selected{% endif %}>{{ merchant.LABEL }}</option>
+        {% endfor %}
+      </select>
+      <br>
+    {% endif %}
     Checkout amount:
     <input id="item-price" class="price" value="{{ unit_price_dollars }}">
     <div id="currency" class="currency">{{ default_currency }}</div>
@@ -131,6 +140,7 @@
     affirm.checkout.open();
     return false; // return false so page doesn't reload
   }
+
   function updateCountry() {
     var country = document.getElementById('country').value;
     var currency;
@@ -143,6 +153,12 @@
     }
     var currency_label = document.getElementById('currency');
     currency_label.innerText = currency;
+  }
+
+  function updateMerchant() {
+    var merchant_public_api_key = document.getElementById('merchant').value;
+    checkoutData.merchant.public_api_key = merchant_public_api_key
+    checkoutData.merchant.user_confirmation_url = checkoutData.merchant.user_confirmation_url.replace(/\?public_api_key=.+/, '?public_api_key=' + merchant_public_api_key)
   }
 </script>
 </body>

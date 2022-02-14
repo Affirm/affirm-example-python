@@ -16,17 +16,27 @@ def _get_extra_request_args():
         return {}
 
 
-def get_checkout_from_token(checkout_token):
-    read_checkout_url = "{0}/checkout/{1}".format(app.config["AFFIRM"]["API_URL"], checkout_token)
+def _get_secret_api_key(public_api_key):
+    if "MERCHANTS" not in app.config["AFFIRM"]:
+        return app.config["AFFIRM"]["SECRET_API_KEY"]
+
+    for merchant in app.config["AFFIRM"]["MERCHANTS"]:
+        if merchant['PUBLIC_API_KEY'] == public_api_key:
+            return merchant['SECRET_API_KEY']
+
+
+def get_checkout_from_token(checkout_token, public_api_key):
+    read_checkout_url = "{0}/checkout/{1}".format(
+        app.config["AFFIRM"]["API_URL"], checkout_token)
     print read_checkout_url
     return requests.get(read_checkout_url,
                         headers={"Content-Type": "application/json"},
-                        auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
-                              app.config["AFFIRM"]["SECRET_API_KEY"]),
+                        auth=(public_api_key,
+                              _get_secret_api_key(public_api_key)),
                         **_get_extra_request_args()).json()
 
 
-def create_charge(checkout_token):
+def create_charge(checkout_token, public_api_key):
     create_charge_url = "{0}/charges".format(app.config["AFFIRM"]["API_URL"])
     print create_charge_url
     request_args = {}
@@ -35,17 +45,18 @@ def create_charge(checkout_token):
                              "checkout_token": checkout_token
                          }),
                          headers={"Content-Type": "application/json"},
-                         auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
-                               app.config["AFFIRM"]["SECRET_API_KEY"]),
+                         auth=(public_api_key,
+                               _get_secret_api_key(public_api_key)),
                          **_get_extra_request_args()).json()
 
 
-def merchant_capture_charge(charge_id, amount=None):
-    return _merchant_capture_charge(charge_id, amount)
+def merchant_capture_charge(charge_id, public_api_key, amount=None):
+    return _merchant_capture_charge(charge_id, public_api_key, amount)
 
 
-def _merchant_capture_charge(charge_id, amount=None):
-    capture_charge_url = "{0}/charges/{1}/capture".format(app.config["AFFIRM"]["API_URL"], charge_id)
+def _merchant_capture_charge(charge_id, public_api_key, amount=None):
+    capture_charge_url = "{0}/charges/{1}/capture".format(
+        app.config["AFFIRM"]["API_URL"], charge_id)
     print capture_charge_url
 
     return requests.post(
@@ -54,55 +65,61 @@ def _merchant_capture_charge(charge_id, amount=None):
             "amount": amount,
         }),
         headers={"Content-Type": "application/json"},
-        auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
-              app.config["AFFIRM"]["SECRET_API_KEY"]),
+        auth=(public_api_key,
+              _get_secret_api_key(public_api_key)),
         **_get_extra_request_args()).json()
 
 
-def merchant_capture_and_originate_charge(charge_id):
-    merchant_capture_result = _merchant_capture_charge(charge_id)
-    originate_charge(charge_id)
+def merchant_capture_and_originate_charge(charge_id, public_api_key):
+    merchant_capture_result = _merchant_capture_charge(
+        charge_id, public_api_key)
+    originate_charge(charge_id, public_api_key)
     return merchant_capture_result
 
 
-def originate_charge(charge_id):
-    originate_charge_url = "{0}/originate/{1}".format(app.config["AFFIRM"]["FUNCTIONAL_TESTS_URL"], charge_id)
+def originate_charge(charge_id, public_api_key):
+    originate_charge_url = "{0}/originate/{1}".format(
+        app.config["AFFIRM"]["FUNCTIONAL_TESTS_URL"], charge_id)
 
     print originate_charge_url
     requests.post(originate_charge_url)
 
-    return read_charge(charge_id)
+    return read_charge(charge_id, public_api_key)
 
 
-def void_charge(charge_id):
-    void_charge_url = "{0}/charges/{1}/void".format(app.config["AFFIRM"]["API_URL"], charge_id)
+def void_charge(charge_id, public_api_key):
+    void_charge_url = "{0}/charges/{1}/void".format(
+        app.config["AFFIRM"]["API_URL"], charge_id)
     print void_charge_url
     return requests.post(void_charge_url,
-                         auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
-                               app.config["AFFIRM"]["SECRET_API_KEY"]),
+                         auth=(public_api_key,
+                               _get_secret_api_key(public_api_key)),
                          **_get_extra_request_args()).json()
 
 
-def refund_charge(charge_id, amount=None):
-    refund_charge_url = "{0}/charges/{1}/refund".format(app.config["AFFIRM"]["API_URL"], charge_id)
+def refund_charge(charge_id, public_api_key, amount=None):
+    refund_charge_url = "{0}/charges/{1}/refund".format(
+        app.config["AFFIRM"]["API_URL"], charge_id)
     print refund_charge_url
     return requests.post(refund_charge_url,
                          data=json.dumps({
                              "amount": amount
                          }),
                          headers={"Content-Type": "application/json"},
-                         auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
-                               app.config["AFFIRM"]["SECRET_API_KEY"]),
+                         auth=(public_api_key,
+                               _get_secret_api_key(public_api_key)),
                          **_get_extra_request_args()).json()
 
 
-def read_charge(charge_id):
-    get_charge_url = "{0}/charges/{1}".format(app.config["AFFIRM"]["API_URL"], charge_id)
+def read_charge(charge_id, public_api_key):
+    get_charge_url = "{0}/charges/{1}".format(
+        app.config["AFFIRM"]["API_URL"], charge_id)
     print get_charge_url
     return requests.get(get_charge_url,
-                        auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
-                              app.config["AFFIRM"]["SECRET_API_KEY"]),
+                        auth=(public_api_key,
+                              _get_secret_api_key(public_api_key)),
                         **_get_extra_request_args()).json()
+
 
 def display_charge_actions(template_data):
     kwargs = {}
@@ -112,13 +129,17 @@ def display_charge_actions(template_data):
         template_data["{0}_url".format(charge_action)] = url_for(".admin_do",
                                                                  charge_action=charge_action,
                                                                  charge_id=template_data["charge_id"],
+                                                                 public_api_key=template_data["public_api_key"],
                                                                  **kwargs)
 
     return flask.render_template("user_confirm.html", **template_data)
 
 # Affirm Transactions REST API
-def create_transaction(checkout_token):
-    create_transaction_url = "{0}/transactions".format(app.config["AFFIRM"]["TRANSACTIONS_API_URL"])
+
+
+def create_transaction(checkout_token, public_api_key):
+    create_transaction_url = "{0}/transactions".format(
+        app.config["AFFIRM"]["TRANSACTIONS_API_URL"])
     print create_transaction_url
     request_args = {}
     return requests.post(create_transaction_url,
@@ -126,41 +147,48 @@ def create_transaction(checkout_token):
                              "transaction_id": checkout_token
                          }),
                          headers={"Content-Type": "application/json"},
-                         auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
-                               app.config["AFFIRM"]["SECRET_API_KEY"]),
+                         auth=(public_api_key,
+                               _get_secret_api_key(public_api_key)),
                          **_get_extra_request_args()).json()
 
-def read_transaction(transaction_id):
-    get_transaction_url = "{0}/transactions/{1}".format(app.config["AFFIRM"]["TRANSACTIONS_API_URL"], transaction_id)
+
+def read_transaction(transaction_id, public_api_key):
+    get_transaction_url = "{0}/transactions/{1}".format(
+        app.config["AFFIRM"]["TRANSACTIONS_API_URL"], transaction_id)
     print get_transaction_url
     return requests.get(get_transaction_url,
-                        auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
-                              app.config["AFFIRM"]["SECRET_API_KEY"]),
+                        auth=(public_api_key,
+                              _get_secret_api_key(public_api_key)),
                         **_get_extra_request_args()).json()
 
-def void_transaction(transaction_id):
-    void_transaction_url = "{0}/transactions/{1}/void".format(app.config["AFFIRM"]["TRANSACTIONS_API_URL"], transaction_id)
+
+def void_transaction(transaction_id, public_api_key):
+    void_transaction_url = "{0}/transactions/{1}/void".format(
+        app.config["AFFIRM"]["TRANSACTIONS_API_URL"], transaction_id)
     print void_transaction_url
     return requests.post(void_transaction_url,
-                         auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
-                               app.config["AFFIRM"]["SECRET_API_KEY"]),
+                         auth=(public_api_key,
+                               _get_secret_api_key(public_api_key)),
                          **_get_extra_request_args()).json()
 
 
-def refund_transaction(transaction_id, amount=10):
-    refund_transaction_url = "{0}/transactions/{1}/refund".format(app.config["AFFIRM"]["TRANSACTIONS_API_URL"], transaction_id)
+def refund_transaction(transaction_id, public_api_key, amount=10):
+    refund_transaction_url = "{0}/transactions/{1}/refund".format(
+        app.config["AFFIRM"]["TRANSACTIONS_API_URL"], transaction_id)
     print refund_transaction_url
     return requests.post(refund_transaction_url,
                          data=json.dumps({
                              "amount": amount
                          }),
                          headers={"Content-Type": "application/json"},
-                         auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
-                               app.config["AFFIRM"]["SECRET_API_KEY"]),
+                         auth=(public_api_key,
+                               _get_secret_api_key(public_api_key)),
                          **_get_extra_request_args()).json()
 
-def capture_transaction(transaction_id, amount=None):
-    capture_transaction_url = "{0}/transactions/{1}/capture".format(app.config["AFFIRM"]["TRANSACTIONS_API_URL"], transaction_id)
+
+def capture_transaction(transaction_id, public_api_key, amount=None):
+    capture_transaction_url = "{0}/transactions/{1}/capture".format(
+        app.config["AFFIRM"]["TRANSACTIONS_API_URL"], transaction_id)
     print capture_transaction_url
 
     return requests.post(
@@ -169,9 +197,10 @@ def capture_transaction(transaction_id, amount=None):
             "amount": amount,
         }),
         headers={"Content-Type": "application/json"},
-        auth=(app.config["AFFIRM"]["PUBLIC_API_KEY"],
-              app.config["AFFIRM"]["SECRET_API_KEY"]),
+        auth=(public_api_key,
+              _get_secret_api_key(public_api_key)),
         **_get_extra_request_args()).json()
+
 
 def display_transaction_actions(template_data):
     kwargs = {}
@@ -179,11 +208,13 @@ def display_transaction_actions(template_data):
         kwargs.update({'_external': True, '_scheme': 'https'})
     for transaction_action in {"read", "update", "capture", "refund", "void"}:
         template_data["{0}_url".format(transaction_action)] = url_for(".transaction_admin_do",
-                                                                 transaction_action=transaction_action,
-                                                                 transaction_id=template_data["transaction_id"],
-                                                                 **kwargs)
+                                                                      transaction_action=transaction_action,
+                                                                      transaction_id=template_data["transaction_id"],
+                                                                      public_api_key=template_data["public_api_key"]
+                                                                      ** kwargs)
 
     return flask.render_template("lease_user_confirm.html", **template_data)
+
 
 @app.route("/")
 def shopping_item_page():
@@ -196,6 +227,11 @@ def shopping_item_page():
 
     default_currency = app.config.get('DEFAULT_CURRENCY', 'USD')
 
+    merchant_info = {'public_api_key': app.config["AFFIRM"]["PUBLIC_API_KEY"]}
+
+    url_config = kwargs.copy()
+    url_config.update(merchant_info)
+
     # this gets turned into JSON and used to initialize the affirm checkout
     affirm_checkout_data = {
 
@@ -203,9 +239,8 @@ def shopping_item_page():
         "checkout_id": str(uuid4()),
 
         "merchant": {
-            # "public_api_key": app.config["AFFIRM"]["PUBLIC_API_KEY"],
             "user_cancel_url": url_for(".shopping_item_page", **kwargs),
-            "user_confirmation_url": url_for(".user_confirm_page", **kwargs),
+            "user_confirmation_url": url_for(".user_confirm_page", **url_config),
         },
 
         "config": {
@@ -316,6 +351,8 @@ def user_confirm_page():
     display a confirmation message to the user.
     """
 
+    public_api_key = flask.request.args.get("public_api_key")
+
     if flask.request.method == 'GET':
         checkout_token = flask.request.args.get("checkout_token")
     else:
@@ -325,7 +362,7 @@ def user_confirm_page():
 
     for i in range(3):
         try:
-            checkout = get_checkout_from_token(checkout_token)
+            checkout = get_checkout_from_token(checkout_token, public_api_key)
             pprint.pprint(checkout)
         except Exception:
             # retry for timeouts
@@ -336,16 +373,16 @@ def user_confirm_page():
         print("Error: unable to fetch checkout")
 
     if checkout_token.startswith('LS-'):
-        transaction = create_transaction(checkout_token)
+        transaction = create_transaction(checkout_token, public_api_key)
         pprint.pprint(transaction)
 
-        return display_transaction_actions({"transaction_id": transaction["id"]})
+        return display_transaction_actions({"transaction_id": transaction["id"], "public_api_key": public_api_key})
     else:
         # Capture the charge with Affirm
-        charge = create_charge(checkout_token)
+        charge = create_charge(checkout_token, public_api_key)
         pprint.pprint(charge)
 
-        return display_charge_actions({"charge_id": charge["id"]})
+        return display_charge_actions({"charge_id": charge["id"], "public_api_key": public_api_key})
 
 
 @app.route("/checkout_amendment", methods=["POST"])
@@ -386,8 +423,8 @@ def affirm_checkout_amendment():
     })
 
 
-@app.route("/admin/do/<charge_action>/<charge_id>")
-def admin_do(charge_action, charge_id):
+@app.route("/admin/do/<charge_action>/<charge_id>/<public_api_key>")
+def admin_do(charge_action, charge_id, public_api_key):
     action_dispatch = {
         "read": read_charge,
         "capture": merchant_capture_and_originate_charge,
@@ -398,11 +435,12 @@ def admin_do(charge_action, charge_id):
     }
     if charge_action not in action_dispatch:
         return abort(404)
-    response = action_dispatch[charge_action](charge_id)
+    response = action_dispatch[charge_action](charge_id, public_api_key)
     return "<pre>%s</pre>" % json.dumps(response, indent=2, sort_keys=True)
 
-@app.route("/admin/do/transaction/<transaction_action>/<transaction_id>")
-def transaction_admin_do(transaction_action, transaction_id):
+
+@app.route("/admin/do/transaction/<transaction_action>/<transaction_id>/<public_api_key>")
+def transaction_admin_do(transaction_action, transaction_id, public_api_key):
     action_dispatch = {
         "read": read_transaction,
         "capture": capture_transaction,
@@ -411,7 +449,8 @@ def transaction_admin_do(transaction_action, transaction_id):
     }
     if transaction_action not in action_dispatch:
         return abort(404)
-    response = action_dispatch[transaction_action](transaction_id)
+    response = action_dispatch[transaction_action](
+        transaction_id, public_api_key)
     return "<pre>%s</pre>" % json.dumps(response, indent=2, sort_keys=True)
 
 
