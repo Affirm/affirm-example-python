@@ -423,8 +423,8 @@ def affirm_checkout_amendment():
     })
 
 
-@app.route("/admin/do/<charge_action>/<charge_id>/<public_api_key>")
-def admin_do(charge_action, charge_id, public_api_key):
+@app.route("/admin/do/<charge_action>/<charge_id>")
+def admin_do(charge_action, charge_id):
     action_dispatch = {
         "read": read_charge,
         "capture": merchant_capture_and_originate_charge,
@@ -433,20 +433,26 @@ def admin_do(charge_action, charge_id, public_api_key):
         "merchant_capture": merchant_capture_charge,
         "originate": originate_charge,
     }
+
+    public_api_key = flask.request.args.get("public_api_key")
+
     if charge_action not in action_dispatch:
         return abort(404)
     response = action_dispatch[charge_action](charge_id, public_api_key)
     return "<pre>%s</pre>" % json.dumps(response, indent=2, sort_keys=True)
 
 
-@app.route("/admin/do/transaction/<transaction_action>/<transaction_id>/<public_api_key>")
-def transaction_admin_do(transaction_action, transaction_id, public_api_key):
+@app.route("/admin/do/transaction/<transaction_action>/<transaction_id>")
+def transaction_admin_do(transaction_action, transaction_id):
     action_dispatch = {
         "read": read_transaction,
         "capture": capture_transaction,
         "refund": refund_transaction,
         "void": void_transaction,
     }
+
+    public_api_key = flask.request.args.get("public_api_key")
+
     if transaction_action not in action_dispatch:
         return abort(404)
     response = action_dispatch[transaction_action](
