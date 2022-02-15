@@ -90,8 +90,9 @@
     {% if 'MERCHANTS' in config['AFFIRM'] %}
       Merchants:
       <select id="merchant" onchange="updateMerchant()">
+        <option disabled selected value>select a merchant</option>
         {% for merchant in config['AFFIRM']['MERCHANTS'] %}
-          <option value="{{ merchant.PUBLIC_API_KEY }}" {% if config['AFFIRM']['PUBLIC_API_KEY'] == merchant.PUBLIC_API_KEY %} selected{% endif %}>{{ merchant.LABEL }}</option>
+          <option value="{{ merchant.PUBLIC_API_KEY }}" {% if 'PUBLIC_API_KEY' in config['AFFIRM'] and config['AFFIRM']['PUBLIC_API_KEY'] == merchant.PUBLIC_API_KEY %} selected{% endif %}>{{ merchant.LABEL }}</option>
         {% endfor %}
       </select>
       <br>
@@ -122,10 +123,17 @@
 
   function openCheckout(input) {
     var priceInput = document.getElementById('item-price');
+    var merchantEl = document.getElementById('merchant');
+    var country = document.getElementById('country').value;
     var price = Math.round(Number(priceInput.value) * 100);
+
+    if (merchantEl && !merchantEl.value) {
+      alert('Please select a merchant')
+      return
+    }
+
     checkoutData.total = checkoutData.items[0].unit_price = price;
 
-    const country = document.getElementById('country').value;
     if (country === 'CAN') {
       checkoutData.currency = 'CAD';
       checkoutData.billing.address = caAddress;
@@ -143,7 +151,9 @@
 
   function updateCountry() {
     var country = document.getElementById('country').value;
+    var currencyLabel = document.getElementById('currency');
     var currency;
+
     if (country === 'USA') {
       currency = 'USD';
     } else if (country === 'CAN') {
@@ -151,17 +161,17 @@
     } else if (country === 'AUS') {
       currency = 'AUD';
     }
-    var currency_label = document.getElementById('currency');
-    currency_label.innerText = currency;
+
+    currencyLabel.innerText = currency;
   }
 
   function updateMerchant() {
-    var merchant_public_api_key = document.getElementById('merchant').value;
+    var merchantPublicApiKey = document.getElementById('merchant').value;
     var url = new URL(checkoutData.merchant.user_confirmation_url)
 
-    url.searchParams.set('public_api_key', merchant_public_api_key)
+    url.searchParams.set('public_api_key', merchantPublicApiKey)
 
-    checkoutData.merchant.public_api_key = merchant_public_api_key
+    checkoutData.merchant.public_api_key = merchantPublicApiKey
     checkoutData.merchant.user_confirmation_url = url.toString();
   }
 </script>

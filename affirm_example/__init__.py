@@ -17,12 +17,12 @@ def _get_extra_request_args():
 
 
 def _get_secret_api_key(public_api_key):
-    if "MERCHANTS" not in app.config["AFFIRM"]:
-        return app.config["AFFIRM"]["SECRET_API_KEY"]
+    if "MERCHANTS" in app.config["AFFIRM"]:
+        for merchant in app.config["AFFIRM"]["MERCHANTS"]:
+            if merchant['PUBLIC_API_KEY'] == public_api_key:
+                return merchant['SECRET_API_KEY']
 
-    for merchant in app.config["AFFIRM"]["MERCHANTS"]:
-        if merchant['PUBLIC_API_KEY'] == public_api_key:
-            return merchant['SECRET_API_KEY']
+    return app.config["AFFIRM"]["SECRET_API_KEY"]
 
 
 def get_checkout_from_token(checkout_token, public_api_key):
@@ -39,7 +39,6 @@ def get_checkout_from_token(checkout_token, public_api_key):
 def create_charge(checkout_token, public_api_key):
     create_charge_url = "{0}/charges".format(app.config["AFFIRM"]["API_URL"])
     print create_charge_url
-    request_args = {}
     return requests.post(create_charge_url,
                          data=json.dumps({
                              "checkout_token": checkout_token
@@ -122,14 +121,12 @@ def read_charge(charge_id, public_api_key):
 
 
 def display_charge_actions(template_data):
-    kwargs = {}
+    kwargs = template_data.copy()
     if app.config['USE_HTTPS']:
         kwargs.update({'_external': True, '_scheme': 'https'})
     for charge_action in {"read", "capture", "void", "refund", "merchant_capture", "originate"}:
         template_data["{0}_url".format(charge_action)] = url_for(".admin_do",
                                                                  charge_action=charge_action,
-                                                                 charge_id=template_data["charge_id"],
-                                                                 public_api_key=template_data["public_api_key"],
                                                                  **kwargs)
 
     return flask.render_template("user_confirm.html", **template_data)
@@ -141,7 +138,6 @@ def create_transaction(checkout_token, public_api_key):
     create_transaction_url = "{0}/transactions".format(
         app.config["AFFIRM"]["TRANSACTIONS_API_URL"])
     print create_transaction_url
-    request_args = {}
     return requests.post(create_transaction_url,
                          data=json.dumps({
                              "transaction_id": checkout_token
@@ -203,15 +199,13 @@ def capture_transaction(transaction_id, public_api_key, amount=None):
 
 
 def display_transaction_actions(template_data):
-    kwargs = {}
+    kwargs = template_data.copy()
     if app.config['USE_HTTPS']:
         kwargs.update({'_external': True, '_scheme': 'https'})
     for transaction_action in {"read", "update", "capture", "refund", "void"}:
         template_data["{0}_url".format(transaction_action)] = url_for(".transaction_admin_do",
                                                                       transaction_action=transaction_action,
-                                                                      transaction_id=template_data["transaction_id"],
-                                                                      public_api_key=template_data["public_api_key"]
-                                                                      ** kwargs)
+                                                                      **kwargs)
 
     return flask.render_template("lease_user_confirm.html", **template_data)
 
@@ -227,11 +221,6 @@ def shopping_item_page():
 
     default_currency = app.config.get('DEFAULT_CURRENCY', 'USD')
 
-    merchant_info = {'public_api_key': app.config["AFFIRM"]["PUBLIC_API_KEY"]}
-
-    url_config = kwargs.copy()
-    url_config.update(merchant_info)
-
     # this gets turned into JSON and used to initialize the affirm checkout
     affirm_checkout_data = {
 
@@ -240,7 +229,7 @@ def shopping_item_page():
 
         "merchant": {
             "user_cancel_url": url_for(".shopping_item_page", **kwargs),
-            "user_confirmation_url": url_for(".user_confirm_page", **url_config),
+            "user_confirmation_url": url_for(".user_confirm_page", **kwargs),
         },
 
         "config": {
@@ -351,7 +340,10 @@ def user_confirm_page():
     display a confirmation message to the user.
     """
 
-    public_api_key = flask.request.args.get("public_api_key")
+    public_api_key_query_param = flask.request.args.get(
+        "public_api_key")
+
+    public_api_key = public_api_key_query_param or app.config["AFFIRM"]["PUBLIC_API_KEY"]
 
     if flask.request.method == 'GET':
         checkout_token = flask.request.args.get("checkout_token")
@@ -376,13 +368,23 @@ def user_confirm_page():
         transaction = create_transaction(checkout_token, public_api_key)
         pprint.pprint(transaction)
 
-        return display_transaction_actions({"transaction_id": transaction["id"], "public_api_key": public_api_key})
+        template_args = {"transaction_id": transaction["id"]}
+
+        if public_api_key_query_param:
+            template_args['public_api_key'] = public_api_key
+
+        return display_transaction_actions(template_args)
     else:
         # Capture the charge with Affirm
         charge = create_charge(checkout_token, public_api_key)
         pprint.pprint(charge)
 
-        return display_charge_actions({"charge_id": charge["id"], "public_api_key": public_api_key})
+        template_args = {"charge_id": charge["id"]}
+
+        if public_api_key_query_param:
+            template_args['public_api_key'] = public_api_key
+
+        return display_charge_actions(template_args)
 
 
 @app.route("/checkout_amendment", methods=["POST"])
@@ -434,7 +436,8 @@ def admin_do(charge_action, charge_id):
         "originate": originate_charge,
     }
 
-    public_api_key = flask.request.args.get("public_api_key")
+    public_api_key = flask.request.args.get(
+        "public_api_key") or app.config["AFFIRM"]["PUBLIC_API_KEY"]
 
     if charge_action not in action_dispatch:
         return abort(404)
@@ -451,7 +454,8 @@ def transaction_admin_do(transaction_action, transaction_id):
         "void": void_transaction,
     }
 
-    public_api_key = flask.request.args.get("public_api_key")
+    public_api_key = flask.request.args.get(
+        "public_api_key") or app.config["AFFIRM"]["PUBLIC_API_KEY"]
 
     if transaction_action not in action_dispatch:
         return abort(404)

@@ -16,7 +16,12 @@ if not os.path.exists(settings_file):
 
 settings = yaml.load(file(settings_file))
 
-if not settings['AFFIRM']['PUBLIC_API_KEY'] or not settings['AFFIRM']['SECRET_API_KEY']:
+has_default_api_keys = 'PUBLIC_API_KEY' in settings[
+    'AFFIRM'] and 'SECRET_API_KEY' in settings['AFFIRM']
+
+has_merchant_api_keys = 'MERCHANTS' in settings['AFFIRM']
+
+if not has_default_api_keys and not has_merchant_api_keys:
     print >>sys.stderr, "Please configure your Affirm public and secret API keys in %s" % settings_file
     sys.exit(1)
 
@@ -26,10 +31,10 @@ app = create_app(settings)
 manager = Manager(app)
 manager.add_command("runserver", Server())
 
+
 def main():
     manager.run()
 
+
 if __name__ == "__main__":
     main()
-
-
