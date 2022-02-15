@@ -157,8 +157,12 @@
 
   function updateMerchant() {
     var merchant_public_api_key = document.getElementById('merchant').value;
+    var url = new URL(checkoutData.merchant.user_confirmation_url)
+
+    url.searchParams.set('public_api_key', merchant_public_api_key)
+
     checkoutData.merchant.public_api_key = merchant_public_api_key
-    checkoutData.merchant.user_confirmation_url = checkoutData.merchant.user_confirmation_url.replace(/\?public_api_key=.+/, '?public_api_key=' + merchant_public_api_key)
+    checkoutData.merchant.user_confirmation_url = url.toString();
   }
 </script>
 </body>
