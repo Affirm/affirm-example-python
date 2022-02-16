@@ -24,9 +24,10 @@
 </head>
 <script>
   var _affirm_config = {
-    public_api_key: "{{config['AFFIRM']['PUBLIC_API_KEY']}}",
+    public_api_key: "{{ affirm_checkout['merchant']['public_api_key'] }}",
     script: "{{ config['AFFIRM']['AFFIRM_JS_URL'] }}"
   };
+
   // Begin Affirm JS embed code
   // =======================
   (function(l,g,m,e,a,f,b){var d,c=l[m]||{},h=document.createElement(f),n=document.getElementsByTagName(f)[0],k=function(a,b,c){return function(){a[b]._.push([c,arguments])}};c[e]=k(c,e,"set");d=c[e];c[a]={};c[a]._=[];d._=[];c[a][b]=k(c,a,b);a=0;for(b="set add save post open empty reset on off trigger ready setProduct".split(" ");a<b.length;a++)d[b[a]]=k(c,e,b[a]);a=0;for(b=["get","token","url","items"];a<b.length;a++)d[b[a]]=function(){};h.async=!0;h.src=g[f];n.parentNode.insertBefore(h,n);delete g[f];d(g);l[m]=c})(window,_affirm_config,"affirm","checkout","ui","script","ready");
@@ -87,6 +88,15 @@
       <option value="AUS"{% if default_currency == "AUD" %} selected{% endif %}>AUS 🇦🇺</option>
     </select>
     <br>
+    {% if 'MERCHANTS' in config['AFFIRM'] %}
+      Merchants:
+      <select id="merchant" onchange="updateMerchant()">
+        {% for merchant in config['AFFIRM']['MERCHANTS'] %}
+          <option value="{{ merchant.PUBLIC_API_KEY }}" {% if loop.index0 == 0 %} selected{% endif %}>{{ merchant.LABEL }}</option>
+        {% endfor %}
+      </select>
+      <br>
+    {% endif %}
     Checkout amount:
     <input id="item-price" class="price" value="{{ unit_price_dollars }}">
     <div id="currency" class="currency">{{ default_currency }}</div>
@@ -113,10 +123,12 @@
 
   function openCheckout(input) {
     var priceInput = document.getElementById('item-price');
+    var merchantEl = document.getElementById('merchant');
+    var country = document.getElementById('country').value;
     var price = Math.round(Number(priceInput.value) * 100);
+
     checkoutData.total = checkoutData.items[0].unit_price = price;
 
-    const country = document.getElementById('country').value;
     if (country === 'CAN') {
       checkoutData.currency = 'CAD';
       checkoutData.billing.address = caAddress;
@@ -131,9 +143,12 @@
     affirm.checkout.open();
     return false; // return false so page doesn't reload
   }
+
   function updateCountry() {
     var country = document.getElementById('country').value;
+    var currencyLabel = document.getElementById('currency');
     var currency;
+
     if (country === 'USA') {
       currency = 'USD';
     } else if (country === 'CAN') {
@@ -141,8 +156,18 @@
     } else if (country === 'AUS') {
       currency = 'AUD';
     }
-    var currency_label = document.getElementById('currency');
-    currency_label.innerText = currency;
+
+    currencyLabel.innerText = currency;
+  }
+
+  function updateMerchant() {
+    var merchantPublicApiKey = document.getElementById('merchant').value;
+    var url = new URL(checkoutData.merchant.user_confirmation_url)
+
+    url.searchParams.set('public_api_key', merchantPublicApiKey)
+
+    checkoutData.merchant.public_api_key = merchantPublicApiKey
+    checkoutData.merchant.user_confirmation_url = url.toString();
   }
 </script>
 </body>
