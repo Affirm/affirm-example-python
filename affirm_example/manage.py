@@ -19,7 +19,7 @@ settings = yaml.load(file(settings_file))
 has_default_api_keys = 'PUBLIC_API_KEY' in settings[
     'AFFIRM'] and 'SECRET_API_KEY' in settings['AFFIRM']
 
-has_merchant_api_keys = 'MERCHANTS' in settings['AFFIRM']
+has_merchant_api_keys = 'MERCHANTS' in settings['AFFIRM'] and settings['AFFIRM']['MERCHANTS']
 
 if not has_default_api_keys and not has_merchant_api_keys:
     print >>sys.stderr, "Please configure your Affirm public and secret API keys in %s" % settings_file
