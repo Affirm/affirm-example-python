@@ -16,6 +16,13 @@ def _get_extra_request_args():
         return {}
 
 
+def _get_default_public_api_key():
+    if "MERCHANTS" in app.config["AFFIRM"]:
+        return app.config["AFFIRM"]["MERCHANTS"][0]['PUBLIC_API_KEY']
+
+    return app.config["AFFIRM"]["PUBLIC_API_KEY"]
+
+
 def _get_secret_api_key(public_api_key):
     if "MERCHANTS" in app.config["AFFIRM"]:
         for merchant in app.config["AFFIRM"]["MERCHANTS"]:
@@ -228,6 +235,7 @@ def shopping_item_page():
         "checkout_id": str(uuid4()),
 
         "merchant": {
+            "public_api_key": _get_default_public_api_key(),
             "user_cancel_url": url_for(".shopping_item_page", **kwargs),
             "user_confirmation_url": url_for(".user_confirm_page", **kwargs),
         },
@@ -343,7 +351,7 @@ def user_confirm_page():
     public_api_key_query_param = flask.request.args.get(
         "public_api_key")
 
-    public_api_key = public_api_key_query_param or app.config["AFFIRM"]["PUBLIC_API_KEY"]
+    public_api_key = public_api_key_query_param or _get_default_public_api_key()
 
     if flask.request.method == 'GET':
         checkout_token = flask.request.args.get("checkout_token")
@@ -437,7 +445,7 @@ def admin_do(charge_action, charge_id):
     }
 
     public_api_key = flask.request.args.get(
-        "public_api_key") or app.config["AFFIRM"]["PUBLIC_API_KEY"]
+        "public_api_key") or _get_default_public_api_key()
 
     if charge_action not in action_dispatch:
         return abort(404)
@@ -455,7 +463,7 @@ def transaction_admin_do(transaction_action, transaction_id):
     }
 
     public_api_key = flask.request.args.get(
-        "public_api_key") or app.config["AFFIRM"]["PUBLIC_API_KEY"]
+        "public_api_key") or _get_default_public_api_key()
 
     if transaction_action not in action_dispatch:
         return abort(404)

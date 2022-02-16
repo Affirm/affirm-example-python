@@ -24,7 +24,6 @@
 </head>
 <script>
   var _affirm_config = {
-    public_api_key: "{{config['AFFIRM']['PUBLIC_API_KEY']}}",
     script: "{{ config['AFFIRM']['AFFIRM_JS_URL'] }}"
   };
   // Begin Affirm JS embed code
@@ -90,9 +89,8 @@
     {% if 'MERCHANTS' in config['AFFIRM'] %}
       Merchants:
       <select id="merchant" onchange="updateMerchant()">
-        <option disabled selected value>select a merchant</option>
         {% for merchant in config['AFFIRM']['MERCHANTS'] %}
-          <option value="{{ merchant.PUBLIC_API_KEY }}" {% if 'PUBLIC_API_KEY' in config['AFFIRM'] and config['AFFIRM']['PUBLIC_API_KEY'] == merchant.PUBLIC_API_KEY %} selected{% endif %}>{{ merchant.LABEL }}</option>
+          <option value="{{ merchant.PUBLIC_API_KEY }}" {% if loop.index0 == 0 %} selected{% endif %}>{{ merchant.LABEL }}</option>
         {% endfor %}
       </select>
       <br>
@@ -126,11 +124,6 @@
     var merchantEl = document.getElementById('merchant');
     var country = document.getElementById('country').value;
     var price = Math.round(Number(priceInput.value) * 100);
-
-    if (merchantEl && !merchantEl.value) {
-      alert('Please select a merchant')
-      return
-    }
 
     checkoutData.total = checkoutData.items[0].unit_price = price;
 

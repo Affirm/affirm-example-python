@@ -14,8 +14,9 @@ AFFIRM:
   # Set the secret API key from Affirm
   SECRET_API_KEY:
 
-  # If you have multiple merchants, set the public and secret API keys here
-  # If PUBLIC_API_KEY and SECRET_API_KEY are also set, they will serve as the default merchant
+  # If you have multiple merchants, set the public and secret API keys here.
+  # The first merchant will be selected by default.
+  # If you set MERCHANTS you don't need to set PUBLIC_API_KEY or SECRET_API_KEY.
   MERCHANTS:
     - PUBLIC_API_KEY:
       SECRET_API_KEY:
