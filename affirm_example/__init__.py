@@ -16,15 +16,19 @@ def _get_extra_request_args():
         return {}
 
 
+def _has_merchants_config_key():
+    return "MERCHANTS" in app.config["AFFIRM"] and app.config["AFFIRM"]["MERCHANTS"]
+
+
 def _get_default_public_api_key():
-    if "MERCHANTS" in app.config["AFFIRM"]:
-        return app.config["AFFIRM"]["MERCHANTS"][0]['PUBLIC_API_KEY']
+    if _has_merchants_config_key():
+        return app.config["AFFIRM"]["MERCHANTS"][0]["PUBLIC_API_KEY"]
 
     return app.config["AFFIRM"]["PUBLIC_API_KEY"]
 
 
 def _get_secret_api_key(public_api_key):
-    if "MERCHANTS" in app.config["AFFIRM"]:
+    if _has_merchants_config_key():
         for merchant in app.config["AFFIRM"]["MERCHANTS"]:
             if merchant['PUBLIC_API_KEY'] == public_api_key:
                 return merchant['SECRET_API_KEY']
@@ -336,6 +340,7 @@ def shopping_item_page():
         unit_price_dollars="100.00",
         ca_address=ca_address,
         au_address=au_address,
+        display_merchants=_has_merchants_config_key()
     )
 
     return flask.render_template("index.html", **template_data)

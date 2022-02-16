@@ -88,7 +88,7 @@
       <option value="AUS"{% if default_currency == "AUD" %} selected{% endif %}>AUS 🇦🇺</option>
     </select>
     <br>
-    {% if 'MERCHANTS' in config['AFFIRM'] %}
+    {% if display_merchants %}
       Merchants:
       <select id="merchant" onchange="updateMerchant()">
         {% for merchant in config['AFFIRM']['MERCHANTS'] %}
@@ -123,7 +123,6 @@
 
   function openCheckout(input) {
     var priceInput = document.getElementById('item-price');
-    var merchantEl = document.getElementById('merchant');
     var country = document.getElementById('country').value;
     var price = Math.round(Number(priceInput.value) * 100);
 
