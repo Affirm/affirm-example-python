@@ -1,32 +1,24 @@
 AFFIRM:
 
-  API_URL: https://sandbox.affirm.com/api/v2
+  API_URL: https://<thor_id>.affirm-thor.com/api/v2
 
-  TRANSACTIONS_API_URL: https://sandbox.affirm.com/api/v1
+  TRANSACTIONS_API_URL: https://<thor_id>.affirm-thor.com/api/v1
 
-  FUNCTIONAL_TESTS_URL: https://sandbox.affirm.com/functional_tests
+  FUNCTIONAL_TESTS_URL: https://<thor_id>.affirm-thor.com/functional_tests
 
-  AFFIRM_JS_URL: https://cdn1-sandbox.affirm.com/js/v2/affirm.js
+  AFFIRM_JS_URL: https://<thor_id>.affirm-thor.com/js/v2/affirm.js
 
-  # Set the public API key from Affirm
+  # Deprecated. Please Ignore.
   PUBLIC_API_KEY:
-
-  # Set the secret API key from Affirm
   SECRET_API_KEY:
 
   # If you have multiple merchants, set the public and secret API keys here.
   # The first merchant will be selected by default.
   # If you set MERCHANTS you don't need to set PUBLIC_API_KEY or SECRET_API_KEY.
   MERCHANTS:
-    - PUBLIC_API_KEY:
-      SECRET_API_KEY:
-      LABEL: merchant description
-    - PUBLIC_API_KEY:
-      SECRET_API_KEY:
-      LABEL: merchant description 2
-    - PUBLIC_API_KEY:
-      SECRET_API_KEY:
-      LABEL: merchant description 3
+    - PUBLIC_API_KEY: PreSeededApiKeyDirect
+      SECRET_API_KEY: PreSeededSecretKeyDirect
+      LABEL: Direct Checkout
 
 # Whether or not to inject the checkout amendment url into the Affirm checkout object.
 # If True, it is required that sandbox.affirm.com can reach your server in
